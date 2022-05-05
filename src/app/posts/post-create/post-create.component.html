@@ -1,0 +1,15 @@
+<form (submit) = "onAddPost(postForm)" #postForm = "ngForm">
+    <div class="floating-label-wrap">
+        <input name="title" type="text" id="title" ngModel #title= "ngModel" class="floating-label-field" placeholder="Title" required>
+        <label for="post" class="floating-label">Title</label>
+        <p class="error-text" *ngIf= "title.invalid">Title is required</p>
+    </div>
+    <div class="floating-label-wrap">
+        <textarea rows="6" name="content" id="content" ngModel #content= "ngModel" class="floating-label-field"
+            placeholder="Content" required></textarea>
+        <label for="post" class="floating-label">Content</label>
+        <p class="error-text" *ngIf= "content.invalid">Body is required</p>
+    </div>
+    <button>Save Post</button>
+    <hr>
+</form>
