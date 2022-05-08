@@ -1,0 +1,29 @@
+.login-form {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 350px;
+    min-width: min-content;
+    width: 90%;
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+.password-div {
+    position: relative;   
+    pointer-events: all;
+}
+
+.eye-b {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #ccc;
+    position: absolute;
+    right: calc(0px + 16%);
+    top: calc(48px / 3.25);
+    width: 24px;
+    height: 24px;
+    z-index: 5;
+}

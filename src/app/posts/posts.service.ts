@@ -3,22 +3,43 @@ import { Post } from './post.model';
 
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 
 export class PostService {
     private posts: Post[] = [];
-    private postUpdated = new Subject<Post[]>();
+    private postUpdated = new Subject<{ posts: Post[], postCount: number }>();
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private router: Router) { }
 
-    }
-
-    getPosts() {
-        this.http.get<{ message: string, posts: Post[] }>('http://localhost:3000/api/posts')
-            .subscribe((PostData) => {
-                this.posts = PostData.posts;
-                this.postUpdated.next([...this.posts]);
+    getPosts(pagesize: number, currentpage: number) {
+        const queryParams = `?pagesize=${pagesize}&currentpage=${currentpage}`;
+        this.http.get<{ message: string, posts: any, maxPosts: number }>('https://localhost:2087/api/posts' + queryParams)
+            .pipe(
+                map(postData => {
+                    return {
+                        posts: postData.posts.map(post => {
+                            return {
+                                title: post.title,
+                                content: post.content,
+                                id: post._id,
+                                imagePath: post.imagePath,
+                                creator: post.creator
+                            };
+                        }),
+                        maxPosts: postData.maxPosts
+                    };
+                })
+            )
+            .subscribe((transformedPostsData) => {
+                console.log(transformedPostsData);
+                this.posts = transformedPostsData.posts;
+                this.postUpdated.next({
+                    posts: [...this.posts],
+                    postCount: transformedPostsData.maxPosts
+                });
             });
     }
 
@@ -26,17 +47,25 @@ export class PostService {
         return this.postUpdated.asObservable();
     }
 
-    addPost(title: string, content: string) {
-        const post: Post = {
-            id: null,
-            title: title,
-            content: content
-        };
-        this.http.post<{ message: string }>('http://localhost:3000/api/posts', post)
+    addPost(title: string, content: string, image: File, creator: string) {
+        const postData = new FormData();
+        postData.append('title', title);
+        postData.append('content', content);
+        if (image) {
+            postData.append('image', image, title);
+        }
+        postData.append('creator', creator);
+        this.http.post<{ message: string, postId: string }>('https://localhost:2087/api/posts', postData)
             .subscribe((responseData) => {
-                console.log(responseData.message);
-                this.posts.push(post);
-                this.postUpdated.next([...this.posts]);
+                location.reload();
             });
+    }
+
+    deletePost(postId: string) {
+        return this.http.delete("https://localhost:2087/api/posts/" + postId);
+    }
+
+    getPost(id: string) {
+        return { ...this.posts.find(p => p.id === id) };
     }
 }

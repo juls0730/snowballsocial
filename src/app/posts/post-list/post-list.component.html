@@ -2,6 +2,20 @@
     <div class="post-div" *ngFor="let post of posts">
         <h1>{{post.title}}</h1>
         <p>{{post.content}}</p>
+        <div *ngIf="post.imagePath" class="post-image">
+            <img [src]="post.imagePath" [alt]="post.title">
+        </div>
+        <button class="warn" *ngIf="userIsAuthenticated && userId === post.creator" (click)="onDelete(post.id)">Delete</button>
     </div>
 </div>
-<p *ngIf="posts.length <= 0" class="info-text"> No post added yet! </p>
+<div *ngIf="Loading" class="spinner">
+    <div class="lds-ring">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
+<mat-paginator [length]=" totalposts" [pageSize]="postperpage" (page)="onChangedPage($event)" *ngIf="posts.length > 0">
+</mat-paginator>
+<p *ngIf="posts.length <= 0 && !Loading" class="info-text"> No post added yet! </p>

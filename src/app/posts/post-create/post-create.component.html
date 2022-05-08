@@ -1,14 +1,40 @@
-<form (submit) = "onAddPost(postForm)" #postForm = "ngForm">
+<form (submit)="onAddPost()" [formGroup]="form" #postForm="ngForm"
+    [class.error]="postForm.submitted && postForm.invalid">
     <div class="floating-label-wrap">
-        <input name="title" type="text" id="title" ngModel #title= "ngModel" class="floating-label-field" placeholder="Title" required>
+        <input name="title" type="text" id="title" formControlName="title" class="floating-label-field" maxlength="50"
+            placeholder="Title" required>
         <label for="post" class="floating-label">Title</label>
-        <p class="error-text" *ngIf= "title.invalid">Title is required</p>
+        <div *ngIf="form.get('title').invalid">
+            <p class="error-text" *ngIf="form.get('title').errors['required']">Title is required</p>
+            <p class="error-text" *ngIf="form.get('title').errors['maxlength']">Title is too long</p>
+        </div>
     </div>
     <div class="floating-label-wrap">
-        <textarea rows="6" name="content" id="content" ngModel #content= "ngModel" class="floating-label-field"
-            placeholder="Content" required></textarea>
+        <textarea rows="6" name="content" id="content" formControlName="content" maxlength="500"
+            class="floating-label-field" placeholder="Content" required></textarea>
         <label for="post" class="floating-label">Content</label>
-        <p class="error-text" *ngIf= "content.invalid">Body is required</p>
+        <div *ngIf="form.get('content').invalid">
+            <p class="error-text" *ngIf="form.get('content').errors['required']">Body is required</p>
+            <p class="error-text" *ngIf="form.get('content').errors['maxlength']">Body is too long</p>
+        </div>
+    </div>
+    <div class="extra-buttons">
+        <button type="button" class="icon-button" (click)="filepicker.click()">
+            <svg width="24" height="24" stroke-width="1.5" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M21 3.6V20.4C21 20.7314 20.7314 21 20.4 21H3.6C3.26863 21 3 20.7314 3 20.4V3.6C3 3.26863 3.26863 3 3.6 3H20.4C20.7314 3 21 3.26863 21 3.6Z"
+                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M3 16L10 13L21 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+                <path
+                    d="M16 10C14.8954 10 14 9.10457 14 8C14 6.89543 14.8954 6 16 6C17.1046 6 18 6.89543 18 8C18 9.10457 17.1046 10 16 10Z"
+                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </button>
+        <div *ngIf="!form.get('image').valid">
+            <p class="error-text">File is not an image</p>
+        </div>
+        <input type="file" #filepicker accept="image/png, image/jpeg" (change)="PickedImage($event)">
     </div>
     <button>Save Post</button>
     <hr>

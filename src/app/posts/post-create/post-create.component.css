@@ -1,0 +1,31 @@
+.icon-button {
+    background-color: transparent;
+    margin: 0.25rem;
+    text-align: center;
+    color: #00a8ff;
+    border: none;
+    cursor: pointer;
+    border-radius: 100%;
+    padding: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.icon-button svg {
+    display: -webkit-flex;
+    /* Safari */
+    display: flex;
+    -webkit-align-items: center;
+    /* Safari 7.0+ */
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+.icon-button:hover {
+    background-color: #00aaff1c;
+    color: #00a8ff;
+}
+
+input[type='file'] {
+    display: none;
+}

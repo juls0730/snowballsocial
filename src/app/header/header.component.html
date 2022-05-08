@@ -1,5 +1,39 @@
-<nav class="nav-list">
+<nav class="md-nav">
     <ul>
-        <li><a href="/" class="brandName">SnowballSocial</a></li>
+        <li><a routerLink="/" class="brandName">SnowballSocial</a></li>
+        <li><a routerLink="/">Home</a></li>
+        <div class="end">
+            <li *ngIf="!userIsAuthenticated"><a routerLink="/signup">Sign Up</a></li>
+            <li *ngIf="!userIsAuthenticated"><a routerLink="/login">Log In</a></li>
+            <li *ngIf="userIsAuthenticated"><a href="#" (click)="onLogout()">Logout</a></li>
+        </div>
     </ul>
 </nav>
+<nav class="sm-nav">
+    <ul>
+        <li>
+            <a (click)="slideOutNav()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                        clip-rule="evenodd" />
+                </svg>
+            </a>
+        </li>
+    </ul>
+</nav>
+<div class="slideout-nav" id="slideoutnav">
+    <a (click)="slideOutNav()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="close" fill="none" height="24" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </a>
+    <ul>
+        <li><a (click)="slideOutNav()" routerLink="/">Home</a></li>
+        <li *ngIf="!userIsAuthenticated"><a (click)="slideOutNav()" routerLink="/login">Log In</a></li>
+        <li *ngIf="!userIsAuthenticated"><a (click)="slideOutNav()" routerLink="/signup">Sign Up</a></li>
+        <li *ngIf="userIsAuthenticated"><a href="#" (click)="[slideOutNav(), onLogout()]">Logout</a></li>
+    </ul>
+</div>
+<div class="overlay" id="overlay"></div>
