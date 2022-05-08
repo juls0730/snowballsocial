@@ -210,7 +210,7 @@ main {
   /* Internet Explorer 5.5+ */
 }
 
-button:not(.icon-button), input[type="submit"]:not(.icon-button) {
+button:not(.icon-button):not(.swal-confirm), input[type="submit"]:not(.icon-button) {
   background-color: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
   border: none;
@@ -230,18 +230,18 @@ button:not(.icon-button), input[type="submit"]:not(.icon-button) {
   margin-left: 0.25rem;
 }
 
-button:not(.icon-button)>span.mat-button-wrapper, input[type="submit"]:not(.icon-button)>span.mat-button-wrapper {
+button:not(.icon-button):not(.swal-confirm)>span.mat-button-wrapper, input[type="submit"]:not(.icon-button)>span.mat-button-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-button:hover:not(.icon-button), input[type="submit"]:hover:not(.icon-button) {
+button:hover:not(.icon-button):not(.swal-confirm), input[type="submit"]:hover:not(.icon-button) {
   filter: brightness(105%);
   box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, .12);
 }
 
-button:active:not(.icon-button), input[type="submit"]:active:not(.icon-button) {
+button:active:not(.icon-button):not(.swal-confirm), input[type="submit"]:active:not(.icon-button) {
   filter: brightness(115%);
   box-shadow: 1px 3px 6px 0px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, .12);
 }

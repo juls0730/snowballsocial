@@ -15,6 +15,14 @@ router.post("/signup", (req, res, next) => {
                 username: req.body.username,
                 password: hash
             });
+            user.find({ $or: [{ email: req.body.email }, { username: req.body.username }] })
+                .then(user => {
+                    if (user.length >= 1) {
+                        res.status(409).json({
+                            message: "User already exists"
+                        });
+                    }
+                })
             NewUser.save()
                 .then(result => {
                     return res.status(201).json({
@@ -24,7 +32,7 @@ router.post("/signup", (req, res, next) => {
                 });
         }).catch(err => {
             return res.status(500).json({
-                error: err
+                message: "Cannot Create user!"
             });
         });
 });
@@ -69,8 +77,7 @@ router.post("/login", (req, res, next) => {
             });
         }).catch(err => {
             return res.status(500).json({
-                message: "Internal Server Error, try again later",
-                err: err
+                message: "Invalid Authentication Credentials!",
             });
         })
 })

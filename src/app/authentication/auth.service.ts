@@ -42,7 +42,6 @@ export class AuthService {
 
         this.http.post("https://localhost:2087/api/user/signup", authData)
             .subscribe(response => {
-                console.log(response);
                 this.loginUser(username, password);
             })
 
@@ -57,7 +56,6 @@ export class AuthService {
 
         this.http.post<{ token: string, expiresIn: number, userId: string }>("https://localhost:2087/api/user/login", authData)
             .subscribe(response => {
-                console.log(response);
                 const token = response.token;
                 this.token = token;
                 if (token) {
