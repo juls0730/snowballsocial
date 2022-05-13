@@ -1,0 +1,114 @@
+<div *ngIf="!Loading">
+    <h1>{{post.title}}</h1>
+    <p>{{post.content}}</p>
+    <img class="post-image" *ngIf="post.imagePath" [src]="post.imagePath" [alt]="post.title" loading="lazy">
+    <div class="post-actions">
+        <div class="heart-container">
+            <button class="icon-button" (click)="toggleLike(post.id)">
+                <div id="heart-container">
+                    <div *ngIf="post.likes.includes(userId) == false" class="heart">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -4 24 24" width="24" fill="currentColor">
+                            <path
+                                d="M3.636 7.208L10 13.572l6.364-6.364a3 3 0 1 0-4.243-4.243L10 5.086l-2.121-2.12a3 3 0 0 0-4.243 4.242zM9.293 1.55l.707.707.707-.707a5 5 0 1 1 7.071 7.071l-7.07 7.071a1 1 0 0 1-1.415 0l-7.071-7.07a5 5 0 1 1 7.07-7.071z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div *ngIf="post.likes.includes(userId) == true" class="heart">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -4 24 24" width="24" fill="currentColor">
+                            <path
+                                d="M9.293 1.55l.707.708.707-.707a5 5 0 1 1 7.071 7.071l-7.07 7.071a1 1 0 0 1-1.415 0L2.222 8.622a5 5 0 1 1 7.07-7.071z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+            </button>
+            <label class="heart-count">{{post.likes.length}}</label>
+        </div>
+        <button (click)="openDropdown(post.id + '-1')" id="dropbtn" class="icon-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor">
+                <path
+                    d="M16 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM7.928 9.24a4.02 4.02 0 0 1-.026 1.644l5.04 2.537a4 4 0 1 1-.867 1.803l-5.09-2.562a4 4 0 1 1 .083-5.228l5.036-2.522a4 4 0 1 1 .929 1.772L7.928 9.24zM4 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm12 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z">
+                </path>
+            </svg>
+        </button>
+        <div :id="dropdown{{post.id}}-1" class="dropdown-content">
+            <a class="dropdown-item" (click)="copyLink(post.id)">Copy Link</a>
+        </div>
+        <button (click)="openDropdown(post.id + '-2')" id="dropbtn" class="icon-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -9 24 24" width="24" fill="currentColor">
+                <path
+                    d="M3 6a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm14 0a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm-7 0a3 3 0 1 1 0-6 3 3 0 0 1 0 6z">
+                </path>
+            </svg>
+        </button>
+        <div *ngIf="userIsAuthenticated && userId === post.creator" :id="dropdown{{post.id}}-2"
+            class="dropdown-content">
+            <a class="dropdown-item" (click)="onDelete(post.id)">Delete Post</a>
+        </div>
+    </div>
+</div>
+<div *ngIf="Loading" class="spinner">
+    <div class="lds-ring">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
+<hr />
+<div>
+    <form (submit)="onAddReply(post.id)" [formGroup]="form" #replyForm="ngForm" id="submit-reply-group">
+        <div class="floating-label-wrap">
+            <textarea name="reply" type="text" id="reply" formControlName="reply" class="floating-label-field"
+                maxlength="500" placeholder="Reply" required></textarea>
+            <label for="post" class="floating-label">Reply</label>
+            <div *ngIf="form.get('reply').invalid">
+                <p class="error-text" *ngIf="form.get('reply').errors['required']">Reply is required</p>
+                <p class="error-text" *ngIf="form.get('reply').errors['maxlength']">Reply is too long</p>
+            </div>
+        </div>
+        <button>Reply</button>
+        <hr>
+    </form>
+</div>
+<div multi="true" *ngIf="replies.length > 0">
+    <div class="post-div" *ngFor="let reply of replies">
+        <p>{{reply.content}}</p>
+        <div class="post-actions">
+            <div class="heart-container">
+                <button class="icon-button" (click)="toggleReplyLike(reply.id)">
+                    <div :id="heart-container{{reply.id}}">
+                        <div *ngIf="reply.likes.includes(userId) == false" class="heart">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -4 24 24" width="24"
+                                fill="currentColor">
+                                <path
+                                    d="M3.636 7.208L10 13.572l6.364-6.364a3 3 0 1 0-4.243-4.243L10 5.086l-2.121-2.12a3 3 0 0 0-4.243 4.242zM9.293 1.55l.707.707.707-.707a5 5 0 1 1 7.071 7.071l-7.07 7.071a1 1 0 0 1-1.415 0l-7.071-7.07a5 5 0 1 1 7.07-7.071z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div *ngIf="reply.likes.includes(userId) == true" class="heart">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -4 24 24" width="24"
+                                fill="currentColor">
+                                <path
+                                    d="M9.293 1.55l.707.708.707-.707a5 5 0 1 1 7.071 7.071l-7.07 7.071a1 1 0 0 1-1.415 0L2.222 8.622a5 5 0 1 1 7.07-7.071z">
+                                </path>
+                            </svg>
+                        </div>
+                    </div>
+                </button>
+                <label class="heart-count">{{reply.likes.length}}</label>
+            </div>
+            <button (click)="openDropdown(reply.id + '-1')" id="dropbtn" class="icon-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -9 24 24" width="24" fill="currentColor">
+                    <path
+                        d="M3 6a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm14 0a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm-7 0a3 3 0 1 1 0-6 3 3 0 0 1 0 6z">
+                    </path>
+                </svg>
+            </button>
+            <div *ngIf="userIsAuthenticated && userId === reply.creator" :id="dropdown{{reply.id}}-1"
+                class="dropdown-content">
+                <a class="dropdown-item" (click)="onDeleteReply(reply.id)">Delete Reply</a>
+            </div>
+        </div>
+    </div>
+</div>

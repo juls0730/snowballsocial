@@ -5,6 +5,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { jwtSecret } = require("../config/auth.config");
+const post = require("../models/post");
 
 router.post("/signup", (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
@@ -82,49 +83,59 @@ router.post("/login", (req, res, next) => {
         })
 })
 
-/*
-router.post("/login", (req, res, next) => {
-    // look for a user with an email or a username
-    console.log(req.body)
-    user.findOne({ $or: [{ email: req.body.usernameemail }, { username: req.body.usernameemail }] })
+router.get('/:id', (req, res, next) => {
+    // find user and remove password from the response
+
+    user.findById({ _id: req.params.id }, '-password, -email')
         .then(user => {
-            console.log(user)
             if (!user) {
-                return res.status(401).json({
-                    error: "User not found"
+                return res.status(404).json({
+                    message: "User not found"
                 });
             }
-            fetchedUser = user;
-            // compare the password
-            return bcrypt.compare(req.body.password, fetchedUser.password)
-        })
-        .then(result => {
-            if (!result) {
-                return res.status(401).json({
-                    error: "Password is incorrect"
-                });
-            }
-            // if the password is correct, create a token
-            const token = jwt.sign(
-                {
-                    email: fetchedUser.email,
-                    username: fetchedUser.username,
-                    userId: fetchedUser._id
-                },
-                authConfig.jwtSecret,
-                {
-                    expiresIn: "7d"
-                }
-            );
-            res.status(200).json({
-                token: token,
+
+            return res.status(200).json({
+                user: user
             });
         }).catch(err => {
-            res.status(401).json({
-                error: err
+            return res.status(500).json({
+                message: "Cannot fetch user!"
+            });
+        })
+})
+
+router.get('/:id/posts', (req, res, next) => {
+    user.findById({ _id: req.params.id }, '-password, -email').exec((err, user) => {
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
             });
         }
-        );
-})*/
+
+        if (err) {
+            return res.status(500).json({
+                message: "Cannot fetch user!"
+            });
+        }
+
+        post.find({ creator: user._id }).exec((err, posts) => {
+            if (!posts) {
+                return res.status(404).json({
+                    message: "No posts found"
+                });
+            }
+
+            if (err) {
+                return res.status(500).json({
+                    message: "Cannot fetch posts!"
+                });
+            }
+
+            return res.status(200).json({
+                posts: posts
+            });
+        })
+    })
+})
 
 module.exports = router;  

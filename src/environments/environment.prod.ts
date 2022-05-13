@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  server_location: 'test.juls07.dev',
+  api_location: 'test.juls07.dev:2087'
 };

@@ -15,6 +15,8 @@ import { signupcomponent } from './authentication/signup/signup.component';
 import { AuthInterceptor } from './authentication/auth-interceptor';
 import { ErrorInterceptor } from './error-interceptor';
 import { ErrorComponent } from './error/error.component';
+import { PostShowComponent } from './posts/post-show/post-show.component';
+import { UserShowComponent } from './users/user-show/user-show.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,8 @@ import { ErrorComponent } from './error/error.component';
     PostCreateComponent,
     HeaderComponent,
     PostListComponent,
+    PostShowComponent,
+    UserShowComponent,
     logincomponent,
     signupcomponent
   ],

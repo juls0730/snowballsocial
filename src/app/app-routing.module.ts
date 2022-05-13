@@ -5,12 +5,17 @@ import { PostCreateComponent } from './posts/post-create/post-create.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
 import { signupcomponent } from './authentication/signup/signup.component';
 import { AuthGuard } from './authentication/auth.guard';
+import { PostShowComponent } from './posts/post-show/post-show.component';
+import { UserShowComponent } from './users/user-show/user-show.component';
 
 const routes: Routes = [
   { path: '', component: PostCreateComponent, canActivate:[AuthGuard] },
   { path: '', component: PostListComponent, outlet: 'secondary', pathMatch: 'full', canActivate:[AuthGuard] },
+  { path: 'post/:id', component: PostShowComponent, pathMatch: 'full', canActivate:[AuthGuard] },
   { path: 'login', component: logincomponent },
-  { path: 'signup', component: signupcomponent }
+  { path: 'signup', component: signupcomponent },
+  { path: 'user/:id', component: UserShowComponent, pathMatch: 'full' },
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({

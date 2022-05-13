@@ -4,6 +4,7 @@ import { User } from './user.model';
 import { Subject } from "rxjs";
 import { Router } from "@angular/router";
 import { CookieService } from 'ngx-cookie-service';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: "root" })
 
@@ -40,7 +41,7 @@ export class AuthService {
             password: password
         }
 
-        this.http.post("https://localhost:2087/api/user/signup", authData)
+        this.http.post("https://" + environment.api_location + "/api/user/signup", authData)
             .subscribe(response => {
                 this.loginUser(username, password);
             })
@@ -54,7 +55,7 @@ export class AuthService {
             password: password
         };
 
-        this.http.post<{ token: string, expiresIn: number, userId: string }>("https://localhost:2087/api/user/login", authData)
+        this.http.post<{ token: string, expiresIn: number, userId: string }>("https://" + environment.api_location + "/api/user/login", authData)
             .subscribe(response => {
                 const token = response.token;
                 this.token = token;

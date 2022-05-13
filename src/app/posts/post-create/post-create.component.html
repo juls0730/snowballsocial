@@ -1,5 +1,4 @@
-<form (submit)="onAddPost()" [formGroup]="form" #postForm="ngForm"
-    [class.error]="postForm.submitted && postForm.invalid">
+<form (submit)="onAddPost()" id="submit-group" [formGroup]="form" #postForm="ngForm">
     <div class="floating-label-wrap">
         <input name="title" type="text" id="title" formControlName="title" class="floating-label-field" maxlength="50"
             placeholder="Title" required>
@@ -31,7 +30,7 @@
                     stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
         </button>
-        <div *ngIf="!form.get('image').valid">
+        <div *ngIf="!form.get('image').valid && form.get('image').value !== null">
             <p class="error-text">File is not an image</p>
         </div>
         <input type="file" #filepicker accept="image/png, image/jpeg" (change)="PickedImage($event)">

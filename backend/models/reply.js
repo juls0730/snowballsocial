@@ -1,23 +1,23 @@
 var mongoose = require('mongoose');
 
-var postSchema = mongoose.Schema({
-    title: { type: String, required: true },
+const replySchema = mongoose.Schema({
     content: { type: String, required: true },
-    imagePath: { type: String, required: false },
     creator: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
     },
+    imagePath: { type: String, required: false },
     createdAt: { type: Date, default: Date.now() },
+    post: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+        required: true
+    },
     likes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
-    }],
-    replies: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Reply"
     }]
 });
 
-module.exports = mongoose.model('Post', postSchema);  
+module.exports = mongoose.model('Reply', replySchema);  

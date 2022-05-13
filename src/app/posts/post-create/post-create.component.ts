@@ -42,6 +42,10 @@ export class PostCreateComponent implements OnInit {
             return;
         }
 
+        if (this.form.value.title == null || this.form.value.content == null) {
+            return;
+        }
+
         if (this.form.value.title.length > 50) {
             return;
         }
@@ -52,5 +56,6 @@ export class PostCreateComponent implements OnInit {
 
         this.postsService.addPost(this.form.value.title, this.form.value.content, this.form.value.image, this.authService.getUserId());
         this.form.reset();
+        document.getElementById('submit-group').classList.remove('ng-submitted');
     }
 }  

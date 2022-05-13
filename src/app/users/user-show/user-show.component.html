@@ -1,0 +1,10 @@
+<div *ngIf="!Loading" class="user-info">
+    <img [src]="user.imagePath" class="user-image" />
+    <h1>{{user.username}}</h1>
+    <p *ngIf="user.description">{{user.description}}</p>
+</div>
+<div multi="true" *ngIf="posts.length > 0">
+    <div class="post-div" *ngFor="let post of posts">
+        <h1>{{post.title}}</h1>
+    </div>
+</div>
