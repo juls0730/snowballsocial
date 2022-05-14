@@ -7,6 +7,7 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./login.component.css']
 })
 export class logincomponent {
+  showPassword: boolean = false;
   constructor(public authservice: AuthService) { }
   onlogin(form: NgForm) {
     if (form.invalid) {
@@ -14,5 +15,9 @@ export class logincomponent {
     }
 
     this.authservice.loginUser(form.value.emailusername, form.value.password);
+  }
+
+  public togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 }  

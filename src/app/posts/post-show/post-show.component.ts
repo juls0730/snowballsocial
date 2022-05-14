@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, ParamMap } from "@angular/router";
+import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { AuthService } from "src/app/authentication/auth.service";
 import { environment } from "src/environments/environment";
@@ -16,7 +16,7 @@ import { ReplyService } from "../reply.service";
 })
 
 export class PostShowComponent implements OnInit {
-    constructor(private postsService: PostService, private route: ActivatedRoute, private authService: AuthService, private replyService: ReplyService) {
+    constructor(private postsService: PostService, private route: ActivatedRoute, private router: Router, private authService: AuthService, private replyService: ReplyService) {
         this.postsService = postsService;
     }
     post: Post;
@@ -78,6 +78,8 @@ export class PostShowComponent implements OnInit {
     onDelete(postId: string) {
         this.Loading = true;
         this.postsService.deletePost(postId);
+        this.Loading = false;
+        this.router.navigate(["/"])
     }
 
     onDeleteReply(replyId: string) {

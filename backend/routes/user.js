@@ -19,7 +19,7 @@ router.post("/signup", (req, res, next) => {
             user.find({ $or: [{ email: req.body.email }, { username: req.body.username }] })
                 .then(user => {
                     if (user.length >= 1) {
-                        res.status(409).json({
+                        return res.status(409).json({
                             message: "User already exists"
                         });
                     }
@@ -44,7 +44,7 @@ router.post("/login", (req, res, next) => {
         .then(user => {
             if (!user) {
                 return res.status(404).json({
-                    error: "User not found"
+                    message: "User not found"
                 });
             }
             fetchedUser = user;
@@ -52,12 +52,17 @@ router.post("/login", (req, res, next) => {
             return bcrypt.compare(req.body.password, user.password)
         })
         .then(result => {
-            console.log(fetchedUser)
             if (!result) {
                 return res.status(403).json({
                     message: "Auth failed",
                     result: result
                 });
+            }
+
+            if (!fetchedUser) {
+                return res.status(404).json({
+                    message: "User not found",
+                })
             }
 
             const token = jwt.sign(
@@ -77,9 +82,15 @@ router.post("/login", (req, res, next) => {
                 userId: fetchedUser._id
             });
         }).catch(err => {
+            if (!err) {
+                return;
+            }
+            if (!fetchedUser) {
+                return;
+            }
             return res.status(500).json({
-                message: "Invalid Authentication Credentials!",
-            });
+                message: "Internal server error"
+            })
         })
 })
 

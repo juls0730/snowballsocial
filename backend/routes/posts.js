@@ -152,12 +152,28 @@ router.delete("/:id", checkAuth, (req, res, next) => {
                     });
                 }
 
-                res.status(200).json({
+                replymodel.find({ post: req.params.id }).then(replyResult => {
+                    replymodel.deleteMany({ post: req.params.id }).then(deleteReply => {
+                        if (replyResult.imagePath) {
+                            const imagePath = "backend/" + replyResult.imagePath.split('/').splice(3).join('/');
+                            console.log(imagePath);
+                            fs.unlink(imagePath, function (err) {
+                                if (err) {
+                                    console.error(err);
+                                } else {
+                                    console.log("File removed:", path);
+                                }
+                            });
+                        }
+                    })
+                })
+
+                return res.status(200).json({
                     message: "Post deleted!"
                 });
             });
         } else {
-            res.status(401).json({
+            return res.status(401).json({
                 message: "You are not authorized to delete this post"
             });
         }
@@ -292,7 +308,7 @@ router.delete('/reply/:id', checkAuth, (req, res, next) => {
                 message: "You are not authorized to delete this reply"
             });
         }
-        
+
         if (req.userData.userId != reply.creator) {
             return res.status(403).json({
                 message: "You are not authorized to delete this reply"
@@ -324,7 +340,7 @@ router.put('/reply/:id/togglelike', checkAuth, (req, res, next) => {
                 message: "Reply not found"
             });
         }
-        
+
         if (reply.likes.includes(req.userData.userId)) {
             reply.likes = reply.likes.filter(like => like != req.userData.userId);
         } else {

@@ -10,7 +10,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "start:server": "node server.js",
-    "dev:server": "nodemon server.js"
+    "dev:server": "nodemon -e js,json --ignore src/ server.js"
   },
   "private": true,
   "dependencies": {
