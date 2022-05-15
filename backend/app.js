@@ -8,7 +8,9 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 var compression = require('compression');
 const helmet = require('helmet')
+const fs = require('fs')
 require('dotenv').config({ path: __dirname + '/.env' });
+imageDirs = ['posts', 'replies', 'users']
 
 mongoose.connect('mongodb://localhost:27017/snowballsocial')
     .then(() => {
@@ -44,6 +46,7 @@ app.use((req, res, next) => {
         "GET, POST, PATCH, DELETE, OPTIONS");
     next();
 });
+
 app.use("/images", express.static(path.join("backend/images")));
 
 app.use("/api/posts", postroutes);
@@ -62,5 +65,18 @@ app.use(function (req, res, next) {
     // default to plain-text. send()
     res.type('txt').send('Not found');
 });
+
+for (let i = 0; i < imageDirs.length; i++) {
+    if (fs.existsSync(path.join(__dirname, 'images/' + imageDirs[i]))) {
+        console.log('didnt make image Dir ' + imageDirs[i])
+    } else {
+        fs.mkdir(path.join(__dirname, 'images/' + imageDirs[i]), (err) => {
+            if (err) {
+                return console.error(err);
+            }
+            console.log('Image Dir ' + imageDirs[i] + ' created');
+        })
+    }
+}
 
 module.exports = app;  
