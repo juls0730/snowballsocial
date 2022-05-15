@@ -69,7 +69,9 @@ export class PostListComponent implements OnInit, OnDestroy {
     openDropdown(dropdownNum: string) {
         event.preventDefault();
         event.stopPropagation();
+        console.log("attempetd to oppen: dropdown" + dropdownNum)
         document.getElementById("dropdown" + dropdownNum).classList.toggle("show");
+        console.log("oppened: " + "dropdown" + dropdownNum)
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (let i = 0; i < dropdowns.length; i++) {
             var openDropdown = dropdowns[i];

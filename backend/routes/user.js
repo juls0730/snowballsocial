@@ -3,9 +3,19 @@ const express = require("express");
 const user = require("../models/user");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+const rateLimit = require('express-rate-limit');
 const jwt = require("jsonwebtoken");
 const { jwtSecret } = require("../config/auth.config");
 const post = require("../models/post");
+
+const loginLimiter = rateLimit({
+    windowMs: 90 * 60 * 1000, // 90 minutes
+    max: 70, // Limit each IP to 70 login requests per `window` (here, per 90 minutes)
+    message:
+        'Too many login attempts from this IP, please try again later',
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
 
 router.post("/signup", (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
@@ -39,7 +49,7 @@ router.post("/signup", (req, res, next) => {
 });
 
 let fetchedUser;
-router.post("/login", (req, res, next) => {
+router.post("/login", loginLimiter, (req, res, next) => {
     user.findOne({ $or: [{ email: req.body.usernameemail }, { username: req.body.usernameemail }] })
         .then(user => {
             if (!user) {

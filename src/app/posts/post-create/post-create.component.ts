@@ -33,6 +33,7 @@ export class PostCreateComponent implements OnInit {
         const reader = new FileReader();
         reader.onload = () => {
             this.Pickedimage = reader.result as string;
+            document.getElementById('image-name').textContent = file.name.split(/(\\|\/)/g).pop()
         };
         reader.readAsDataURL(file);
     }

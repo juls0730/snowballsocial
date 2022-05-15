@@ -30,6 +30,7 @@
                     stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
         </button>
+        <span class="image-name" id="image-name"></span>
         <div *ngIf="!form.get('image').valid && form.get('image').value !== null">
             <p class="error-text">File is not an image</p>
         </div>

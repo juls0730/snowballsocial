@@ -37,7 +37,7 @@
     .slideout-nav {
         display: block;
         width: 45%;
-        left: -45%;
+        left: -60%;
         transition: left 0.3s ease-in-out, top 0.3s ease-in-out;
         height: 100vh;
         position: fixed;
