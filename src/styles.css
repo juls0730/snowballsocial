@@ -187,6 +187,8 @@ h1 {
   margin-top: 0.25rem;
   margin-bottom: 0.5rem;
   line-height: var(--md-sys-typescale-headline1-line-height);
+  font-size: var(--md-sys-typescale-headline1-size);
+  letter-spacing: var(--md-sys-typescale-headline1-tracking);
 }
 
 main {
@@ -194,7 +196,8 @@ main {
   padding: 8px;
 }
 
-button:not(.icon-button):not(.swal-confirm), input[type="submit"]:not(.icon-button) {
+button:not(.icon-button):not(.swal-confirm),
+input[type="submit"]:not(.icon-button) {
   background-color: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
   border: none;
@@ -214,18 +217,21 @@ button:not(.icon-button):not(.swal-confirm), input[type="submit"]:not(.icon-butt
   margin-left: 0.25rem;
 }
 
-button:not(.icon-button):not(.swal-confirm)>span.mat-button-wrapper, input[type="submit"]:not(.icon-button)>span.mat-button-wrapper {
+button:not(.icon-button):not(.swal-confirm)>span.mat-button-wrapper,
+input[type="submit"]:not(.icon-button)>span.mat-button-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-button:hover:not(.icon-button):not(.swal-confirm), input[type="submit"]:hover:not(.icon-button) {
+button:hover:not(.icon-button):not(.swal-confirm),
+input[type="submit"]:hover:not(.icon-button) {
   filter: brightness(105%);
   box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, .12);
 }
 
-button:active:not(.icon-button):not(.swal-confirm), input[type="submit"]:active:not(.icon-button) {
+button:active:not(.icon-button):not(.swal-confirm),
+input[type="submit"]:active:not(.icon-button) {
   filter: brightness(115%);
   box-shadow: 1px 3px 6px 0px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, .12);
 }
@@ -267,7 +273,8 @@ textarea {
   transition: border-color 250ms ease-in-out;
 }
 
-form.ng-submitted div > input.ng-invalid, form.ng-submitted div > textarea.ng-invalid {
+form.ng-submitted div>input.ng-invalid,
+form.ng-submitted div>textarea.ng-invalid {
   border-color: var(--md-sys-color-error) !important;
 }
 
@@ -275,7 +282,7 @@ form.ng-submitted div > input.ng-invalid, form.ng-submitted div > textarea.ng-in
   display: none;
 }
 
-form.ng-submitted div div > p.error-text {
+form.ng-submitted div div>p.error-text {
   display: block;
   color: var(--md-sys-color-error);
   font-size: var(--md-sys-typescale-caption-size);
@@ -350,7 +357,8 @@ input:not([type="checkbox"], [type="radio"], [type="submit"], [type="date"])::pl
   margin-top: 1.25rem;
 }
 
-.floating-label-wrap, .floating-label-field {
+.floating-label-wrap,
+.floating-label-field {
   position: relative;
   background-color: transparent;
 }

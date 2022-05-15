@@ -105,10 +105,14 @@ router.post("", checkAuth, multer({ storage: storage }).single("image"), createP
 router.get('', (req, res, next) => {
     const PageSize = +req.query.pagesize;
     const CurentPage = +req.query.currentpage;
-    const postquery = postmodel.find();
-    if (PageSize && CurentPage) {
-        postquery.skip(PageSize * (CurentPage - 1))
-            .limit(PageSize);
+    const postquery = postmodel.find({}, '-__v');
+    if (CurentPage) {
+        postquery.skip(15 * (CurentPage - 1))
+            .limit(15);
+    } else {
+        return res.status(400).json({
+            message: "Currentpage not defined"
+        })
     }
     let posts;
     postquery
@@ -291,6 +295,10 @@ router.post('/:postId/reply', multer({ storage: repliesStorage }).single("image"
             message: "Reply added successfully",
             reply: result
         });
+        postmodel.updateOne({ id: req.params.postId }, { $addToSet: { replies: result._id } })
+            .then(data => {
+                console.log('added reply')
+            })
     })
         .catch(err => {
             console.log(err);
