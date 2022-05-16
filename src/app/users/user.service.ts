@@ -24,4 +24,10 @@ export class UserService {
             posts: Post
         }>(`https://${environment.api_location}/api/user/${id}/posts`);
     }
+
+    followUser(id: string) {
+        return this.http.post<{
+            message: string, user: any
+        }>(`https://${environment.api_location}/api/user/${id}/toggleFollow`, {});
+    }
 }

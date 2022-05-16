@@ -7,6 +7,7 @@ const rateLimit = require('express-rate-limit');
 const jwt = require("jsonwebtoken");
 const { jwtSecret } = require("../config/auth.config");
 const post = require("../models/post");
+const checkAuth = require("../middleware/check-auth");
 
 const loginLimiter = rateLimit({
     windowMs: 90 * 60 * 1000, // 90 minutes
@@ -156,6 +157,75 @@ router.get('/:id/posts', (req, res, next) => {
                 posts: posts
             });
         })
+    })
+})
+
+router.post('/:userId/togglefollow', checkAuth, (req, res, next) => {
+    if (!req.userData.userId) {
+        return res.status(401).json({
+            message: "Auth failed"
+        });
+    }
+    user.findById({ _id: req.params.userId }, '-password, -email').exec((err, fetchedUserasd) => {
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        if (err) {
+            return res.status(500).json({
+                message: "Cannot fetch user!"
+            });
+        }
+
+        if (req.userData.userId == req.params.userId) {
+            return res.status(401).json({
+                message: "Cannot follow yourself"
+            });
+        }
+
+        if (fetchedUserasd.followers.includes(req.userData.userId)) {
+            user.updateOne({ _id: req.params.userId }, { $pull: { followers: req.userData.userId } }, (err, result) => {
+                if (err) {
+                    return res.status(500).json({
+                        message: "Cannot unfollow user"
+                    });
+                }
+
+                user.updateOne({ _id: req.userData.userId }, { $pull: { following: req.params.userId } }, (err, result) => {
+                    if (err) {
+                        return res.status(500).json({
+                            message: "Cannot unfollow user"
+                        });
+                    }
+
+                    return res.status(200).json({
+                        message: "User unfollowed"
+                    });
+                })
+            })
+        } else {
+            user.updateOne({ _id: req.params.userId }, { $push: { followers: req.userData.userId } }, (err, result) => {
+                if (err) {
+                    return res.status(500).json({
+                        message: "Cannot follow user!"
+                    });
+                }
+
+                user.updateOne({ _id: req.userData.userId }, { $push: { following: req.params.userId } }, (err, result) => {
+                    if (err) {
+                        return res.status(500).json({
+                            message: "Cannot follow user!"
+                        });
+                    }
+
+                    return res.status(200).json({
+                        message: "User followed"
+                    });
+                })
+            })
+        }
     })
 })
 

@@ -24,6 +24,18 @@
     padding-bottom: 0.5rem;
 }
 
+@media (max-width: 590px) {
+    .dropdown-content {
+      /* make sure the dropdown is on the other line than the icons with flex */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 0 auto;
+      margin-top: 2.75rem;
+      right: 0;
+    }
+  }
+
 .show {
     display: block;
     visibility: visible;

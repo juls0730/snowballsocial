@@ -1,5 +1,8 @@
 .user-info {
-    display: flex;
     border-bottom: 1px solid var(--md-sys-color-post-outline);
     margin-bottom: 0.5rem;
+}
+
+.followers {
+    margin-right: 1.25rem;
 }

@@ -1,6 +1,20 @@
 <div *ngIf="!Loading" class="user-info">
     <h1>{{user.username}}</h1>
     <p *ngIf="user.description">{{user.description}}</p>
+    <div>
+        <span class="followers">Followers: <b>{{user.followers.length}}</b></span><span>Follwoing:
+            <b>{{user.following.length}}</b></span>
+    </div>
+    <button (click)="toggleFollow()" *ngIf="!isCurrentUser"><span *ngIf="following">unFollow</span><span
+            *ngIf="!following">Follow</span></button>
+</div>
+<div *ngIf="Loading">
+    <div class="lds-ring">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
 </div>
 <!----
 <div multi="true" *ngIf="posts.length > 0">

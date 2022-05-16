@@ -327,6 +327,10 @@ router.delete('/reply/:id', checkAuth, (req, res, next) => {
             res.status(200).json({
                 message: "Reply deleted!"
             });
+            postmodel.updateOne({ id: reply.post }, { $pull: { replies: reply._id } })
+            .then(data => {
+                console.log('added reply')
+            })
         }).catch(err => {
             console.log(err);
             res.status(500).json({
