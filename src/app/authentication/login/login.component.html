@@ -3,7 +3,7 @@
 <form (submit)="onlogin(loginform)" #loginform="ngForm" [class.error]="loginform.submitted && loginform.invalid"
     class="login-form">
     <div class="floating-label-wrap">
-        <input name="emailusername" type="text" id="emailusername" ngModel #emailusername="ngModel"
+        <input name="emailusername" type="text" autocomplete="username" id="emailusername" ngModel #emailusername="ngModel"
             class="floating-label-field" placeholder="Email or username" required>
         <label for="emailusername" class="floating-label">Email or username</label>
         <div *ngIf="emailusername.invalid">
@@ -11,7 +11,7 @@
         </div>
     </div>
     <div class="floating-label-wrap">
-        <input name="password" type="{{showPassword ? 'text' : 'password' }}" id="password" ngModel #password="ngModel" class="floating-label-field password-div"
+        <input name="password" autoComplete="current-password" type="{{showPassword ? 'text' : 'password' }}" id="password" ngModel #password="ngModel" class="floating-label-field password-div"
             maxlength="256" minlength="8" placeholder="Password" required>
         <label for="password" class="floating-label">Password</label>
         <a class="password-toggle" (click)="togglePassword()">

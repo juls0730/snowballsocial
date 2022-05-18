@@ -1,14 +1,5 @@
 <form (submit)="onAddPost()" id="submit-group" [formGroup]="form" #postForm="ngForm">
     <div class="floating-label-wrap">
-        <input name="title" type="text" id="title" formControlName="title" class="floating-label-field" maxlength="50"
-            placeholder="Title" required>
-        <label for="post" class="floating-label">Title</label>
-        <div *ngIf="form.get('title').invalid">
-            <p class="error-text" *ngIf="form.get('title').errors['required']">Title is required</p>
-            <p class="error-text" *ngIf="form.get('title').errors['maxlength']">Title is too long</p>
-        </div>
-    </div>
-    <div class="floating-label-wrap">
         <textarea rows="6" name="content" id="content" formControlName="content" maxlength="500"
             class="floating-label-field" placeholder="Content" required></textarea>
         <label for="post" class="floating-label">Content</label>
@@ -34,7 +25,7 @@
         <div *ngIf="!form.get('image').valid && form.get('image').value !== null">
             <p class="error-text">File is not an image</p>
         </div>
-        <input type="file" #filepicker accept="image/png, image/jpeg" (change)="PickedImage($event)">
+        <input type="file" id="image-picker" #filepicker accept="image/png, image/jpeg" (change)="PickedImage($event)">
     </div>
     <button>Save Post</button>
     <hr>

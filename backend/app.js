@@ -39,6 +39,7 @@ function shouldCompress(req, res) {
 
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "https://" + process.env['SERVER_LOCATION']);
+    res.setHeader("Cross-Origin-Resource-Policy", "same-site");
     res.setHeader(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept, Authorization");

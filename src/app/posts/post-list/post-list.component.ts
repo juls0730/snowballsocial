@@ -16,7 +16,6 @@ import { Router } from "@angular/router";
 
 export class PostListComponent implements OnInit, OnDestroy {
     totalposts = 0;
-    postperpage = 15;
     currentpage = 1;
     userId: string;
     private authStatusSub: Subscription;
@@ -31,7 +30,7 @@ export class PostListComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.Loading = true;
-        this.postsService.getPosts(this.postperpage, this.currentpage);
+        this.postsService.getPosts( this.currentpage);
         this.userId = this.authService.getUserId();
         this.PostSub = this.postsService.getPostUpdateListenetr().
             subscribe((postData: { posts: Post[], postCount: number }) => {
@@ -88,8 +87,7 @@ export class PostListComponent implements OnInit, OnDestroy {
     onChangedPage(pageData: PageEvent) {
         this.Loading = true;
         this.currentpage = pageData.pageIndex + 1;
-        this.postperpage = pageData.pageSize;
-        this.postsService.getPosts(this.postperpage, this.currentpage);
+        this.postsService.getPosts(this.currentpage);
     }
 
     onDelete(postId: string) {

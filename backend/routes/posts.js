@@ -1,10 +1,12 @@
 const express = require("express");
 const postmodel = require('../models/post');
 const replymodel = require('../models/reply');
+const usermodel = require('../models/user');
 const rateLimit = require('express-rate-limit');
 const multer = require("multer");
 const fs = require('fs');
 const path = require('path');
+const Jimp = require("jimp");
 
 const router = express.Router();
 const checkAuth = require("../middleware/check-auth");
@@ -62,38 +64,74 @@ router.post("", checkAuth, multer({ storage: storage }).single("image"), createP
     let post;
     if (!req.file) {
         post = new postmodel({
-            title: req.body.title,
             content: req.body.content,
             creator: req.userData.userId,
         });
     } else {
+        let compressedImg = req.file.filename;
         const url = 'https://' + process.env['API_LOCATION'];
+        let fileext = req.file.filename.split('.').pop();
+        if (fileext == 'png') {
+            const filePath = path.join(__dirname, '../images/posts/', req.file.filename);
+            const name = req.file.filename.split('.').shift();
+            Jimp.read(filePath, function (err, image) {
+                if (err) throw err;
+
+                image.quality(60)
+                    .write(path.join(__dirname, '../images/posts/', name + '.jpg'));
+                fs.rm(path.join(__dirname, '../images/posts/', req.file.filename), (err) => {
+                    if (err) throw err;
+                })
+            })
+            compressedImg = name + '.jpg';
+        }
+        if (fileext == 'jpg') {
+            const filePath = path.join(__dirname, '../images/posts/', req.file.filename);
+            const name = req.file.filename.split('.').shift();
+            Jimp.read(filePath, function (err, image) {
+                if (err) throw err;
+
+                image.quality(60)
+                    .write(path.join(__dirname, '../images/posts/', name + '.jpg'));
+            })
+        }
         post = new postmodel({
-            title: req.body.title,
             content: req.body.content,
-            imagePath: url + "/images/posts/" + req.file.filename,
+            imagePath: url + "/images/posts/" + compressedImg,
             creator: req.userData.userId,
         });
     }
     console.log(post);
-    if (req.body.title === undefined || req.body.content === undefined) {
+    if (req.body.content === undefined) {
         res.status(400).json({
             message: "Title and content are required"
         });
         return;
     }
 
-    if (req.body.title.length > 50 || req.body.content.length > 500) {
+    if (req.body.content.length > 500) {
         res.status(400).json({
             message: "Title or content are too long"
         });
         return;
     }
+
     post.save().then(result => {
-        res.status(201).json({
-            message: 'Post added successfully',
-            post: result
-        });
+        usermodel.findById(req.userData.userId, '-password -__v -followers -following -email').then(user => {
+            if (!user) {
+                res.status(404).json({
+                    message: "User not found"
+                });
+                return;
+            }
+            res.status(201).json({
+                message: "Post created",
+                post: {
+                    ...result._doc,
+                    creator: user
+                }
+            });
+        })
     }).catch(err => {
         console.log(err);
         res.status(500).json({
@@ -102,6 +140,8 @@ router.post("", checkAuth, multer({ storage: storage }).single("image"), createP
     });
 });
 
+/*
+Old code for getting all posts, does not include username
 router.get('', (req, res, next) => {
     const PageSize = +req.query.pagesize;
     const CurentPage = +req.query.currentpage;
@@ -120,6 +160,7 @@ router.get('', (req, res, next) => {
             posts = documents;
             return postmodel.count();
         }).then(count => {
+            // add username to posts
             res.status(200).json({
                 message: "Posts fetched successfully",
                 posts: posts,
@@ -132,6 +173,64 @@ router.get('', (req, res, next) => {
             });
         });
 });
+*/
+
+router.get('', (req, res, next) => {
+    let maxPosts;
+    const CurentPage = +req.query.currentpage;
+    const postquery = postmodel.find({}, '-__v');
+    if (CurentPage) {
+        postquery.skip(15 * (CurentPage - 1))
+            .limit(15);
+    } else {
+        return res.status(400).json({
+            message: "Currentpage not defined"
+        })
+    }
+    postquery.lean().exec(function (err, posts) {
+        if (err) {
+            return res.status(500).json({
+                message: "Fetching posts failed"
+            });
+        }
+
+        if (!((posts.length / 15) > 0)) {
+            console.log(posts.length / 15)
+            return res.status(406).json({
+                message: "Not enough posts to fill that many pages"
+            })
+        }
+
+        if (posts.length == 0) {
+            return res.status(200).json({
+                message: "Fetching posts failed",
+                posts: posts
+            });
+        }
+
+        postmodel.count().then(count => {
+            maxPosts = count;
+        })
+
+        for (let i = 0; i < posts.length; i++) {
+            usermodel.findById(posts[i].creator, '-password -__v -followers -following -email', function (err, user) {
+                if (err) {
+                    return res.status(500).json({
+                        message: "Fetching posts failed"
+                    });
+                }
+                posts[i].creator = user;
+                if (i === posts.length - 1) {
+                    return res.status(200).json({
+                        message: "Posts fetched successfully",
+                        posts: posts,
+                        maxPosts: maxPosts
+                    });
+                }
+            })
+        }
+    })
+})
 
 router.delete("/:id", checkAuth, (req, res, next) => {
     postmodel.findOne({ _id: req.params.id }).then(post => {
@@ -190,23 +289,31 @@ router.delete("/:id", checkAuth, (req, res, next) => {
 });
 
 router.get("/:id", (req, res, next) => {
-    postmodel.findOne({ _id: req.params.id }).then(result => {
+    postmodel.findOne({ _id: req.params.id }).lean().exec(function (err, result) {
+        if (err) {
+            return res.status(500).json({
+                message: "Fetching post failed"
+            });
+        }
         if (!result) {
             res.status(404).json({
                 message: "Post not found"
             });
         } else {
-            res.status(200).json({
-                message: "Post fetched!",
-                post: result
-            });
+            usermodel.findById(result.creator, '-password -__v -followers -following -email', function (err, user) {
+                if (err) {
+                    return res.status(500).json({
+                        message: "Fetching posts failed"
+                    });
+                }
+                result.creator = user;
+                res.status(200).json({
+                    message: "Post fetched successfully",
+                    post: result
+                });
+            })
         }
-    }).catch(err => {
-        console.log(err);
-        res.status(500).json({
-            message: "Fetching post failed"
-        });
-    });
+    })
 })
 
 router.put("/:id/togglelike", checkAuth, (req, res, next) => {
@@ -328,9 +435,9 @@ router.delete('/reply/:id', checkAuth, (req, res, next) => {
                 message: "Reply deleted!"
             });
             postmodel.updateOne({ id: reply.post }, { $pull: { replies: reply._id } })
-            .then(data => {
-                console.log('added reply')
-            })
+                .then(data => {
+                    console.log('added reply')
+                })
         }).catch(err => {
             console.log(err);
             res.status(500).json({

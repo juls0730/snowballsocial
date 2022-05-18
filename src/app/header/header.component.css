@@ -173,4 +173,125 @@
         font-weight: 600;
         color: var(--md-sys-color-on-background);
     }
+
+    .pfp {
+        border-radius: 50%;
+        margin-right: .25rem;
+    }
+
+    .pfp-svg {
+        /* center the svg vertically */
+        margin: 10% 0;
+    }
+
+    .image {
+        cursor: pointer;
+    }
+
+    .dropdown-user {
+        visibility: hidden;
+        width: 15rem;
+        height: 17rem;
+        border: 1px solid var(--md-sys-color-dropdown-background-outline);
+        padding: .5rem;
+        border-radius: 8px;
+        background-color: var(--md-sys-color-background);
+        position: absolute;
+        right: 1.25rem;
+        margin-top: 3.75rem;
+        z-index: 5;
+        overflow: hidden;
+        box-shadow: 0px 4px 6px 2px rgba(0, 0, 0, 0.35);
+        transition: all 250ms;
+    }
+
+    .active {
+        visibility: visible;
+        animation: rolldown 350ms;
+    }
+
+    .leaving {
+        animation: rollup 350ms;
+    }
+
+    .dropdown-user-info {
+        height: fit-content;
+        width: max-content;
+        min-height: 64px;
+    }
+
+    .username {
+        position: relative;
+        top: 0.25rem;
+        width: fit-content;
+        margin: 0;
+        font-size: large;
+    }
+
+    .pfp-dropdown {
+        float: left;
+        margin-right: 0.75rem;
+    }
+
+    .dropdown-buttons {
+        min-width: 100% !important;
+        max-height: 48px;
+        margin-left: 0 !important;
+        margin-top: 0 !important;
+        text-transform: none !important;
+        text-align: unset !important;
+        background-color: var(--md-sys-color-background) !important;
+        box-shadow: none !important;
+        color: var(--md-sys-color-on-background) !important;
+        padding: 14px 16px;
+        height: fit-content !important;
+    }
+
+    /* prefers dark mode */
+    @media (prefers-color-scheme: dark) {
+        .dropdown-buttons:hover {
+            filter: brightness(120%) !important;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        .dropdown-buttons:hover {
+            filter: brightness(90%) !important;
+        }
+    }
+
+    .dropdown-buttons svg {
+        padding-right: 0.25rem;
+        height: 18px;
+        float: left;
+    }
+
+    .dropdown-user-links {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        height: calc(100% - 1rem - 44px - 1rem - 0.75rem);
+    }
+
+    @keyframes rolldown {
+        0% {
+            height: 0px;
+        }
+
+        100% {
+            height: 15rem;
+        }
+    }
+
+    @keyframes rollup {
+        0% {
+            height: 15rem;
+        }
+
+        100% {
+            height: 0px;
+        }
+    }
 }

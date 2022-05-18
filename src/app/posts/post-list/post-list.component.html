@@ -1,13 +1,15 @@
 <div multi="true" *ngIf="posts.length">
     <div class="post-div" *ngFor="let post of posts" (click)="gotoPost(post.id)">
-        <h1>{{post.title}}</h1>
-        <p>{{post.content}}</p>
+        <a class="username" routerLink="/user/{{post.creator}}">
+            by: {{post.creatorname}}
+        </a>
+        <p class="post-text">{{post.content}}</p>
         <div *ngIf="post.imagePath" class="post-image">
-            <img [src]="post.imagePath" [alt]="post.title" loading="lazy">
+            <img [src]="post.imagePath" [alt]="post.content.substring(0, 10)" loading="lazy">
         </div>
         <div class="post-actions">
             <div class="heart-container">
-                <button class="icon-button" id="heartbtn" (click)="toggleLike(post.id)">
+                <button class="icon-button heartbtn" id="heartbtn" (click)="toggleLike(post.id)">
                     <div :id="heart-container{{post.id}}">
                         <div *ngIf="post.likes.includes(userId) == false" class="heart">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -4 24 24" width="24"
@@ -29,18 +31,21 @@
                 </button>
                 <label class="heart-count">{{post.likes.length}}</label>
             </div>
-            <button class="icon-button">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message-dots" width="24"
-                    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <desc>Download more icon variants from https://tabler-icons.io/i/message-dots</desc>
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                    <path d="M4 21v-13a3 3 0 0 1 3 -3h10a3 3 0 0 1 3 3v6a3 3 0 0 1 -3 3h-9l-4 4"></path>
-                    <line x1="12" y1="11" x2="12" y2="11.01"></line>
-                    <line x1="8" y1="11" x2="8" y2="11.01"></line>
-                    <line x1="16" y1="11" x2="16" y2="11.01"></line>
-                </svg>
-            </button>
+            <div class="comment-container">
+                <button class="icon-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message-dots" width="24"
+                        height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <desc>Download more icon variants from https://tabler-icons.io/i/message-dots</desc>
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M4 21v-13a3 3 0 0 1 3 -3h10a3 3 0 0 1 3 3v6a3 3 0 0 1 -3 3h-9l-4 4"></path>
+                        <line x1="12" y1="11" x2="12" y2="11.01"></line>
+                        <line x1="8" y1="11" x2="8" y2="11.01"></line>
+                        <line x1="16" y1="11" x2="16" y2="11.01"></line>
+                    </svg>
+                </button>
+                <label class="comment-count">{{post.replies.length}}</label>
+            </div>
             <button (click)="openDropdown(post.id + '-1')" id="dropbtn" class="icon-button">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor">
                     <path
@@ -74,6 +79,6 @@
         <div></div>
     </div>
 </div>
-<mat-paginator [length]=" totalposts" [pageSize]="postperpage" (page)="onChangedPage($event)" *ngIf="posts.length > 0">
+<mat-paginator [length]=" totalposts" [pageSize]="15" (page)="onChangedPage($event)" *ngIf="posts.length > 0">
 </mat-paginator>
 <p *ngIf="posts.length <= 0 && !Loading" class="info-text"> No post added yet! </p>

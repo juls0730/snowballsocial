@@ -17,19 +17,20 @@ export class PostService {
 
     constructor(private http: HttpClient, private router: Router) { }
 
-    getPosts(pagesize: number, currentpage: number) {
-        const queryParams = `?pagesize=${pagesize}&currentpage=${currentpage}`;
+    getPosts(currentpage: number) {
+        const queryParams = `?currentpage=${currentpage}`;
         this.http.get<{ message: string, posts: any, maxPosts: number }>('https://' + environment.api_location + '/api/posts' + queryParams)
             .pipe(
                 map(postData => {
                     return {
                         posts: postData.posts.map(post => {
                             return {
-                                title: post.title,
                                 content: post.content,
                                 id: post._id,
                                 imagePath: post.imagePath,
-                                creator: post.creator,
+                                creator: post.creator._id,
+                                creatorname: post.creator.username,
+                                replies: post.replies,
                                 likes: post.likes
                             };
                         }),
@@ -51,23 +52,23 @@ export class PostService {
         return this.postUpdated.asObservable();
     }
 
-    addPost(title: string, content: string, image: File, creator: string) {
+    addPost(content: string, image: File, creator: string) {
         const postData = new FormData();
-        postData.append('title', title);
         postData.append('content', content);
         if (image) {
-            postData.append('image', image, title);
+            postData.append('image', image, content.substring(0, 10));
         }
         postData.append('creator', creator);
         this.http.post<{ post: any }>('https://' + environment.api_location + '/api/posts', postData)
             .subscribe((responseData) => {
                 const post: Post = {
                     id: responseData.post._id,
-                    title: responseData.post.title,
                     content: responseData.post.content,
                     imagePath: responseData.post.imagePath,
-                    creator: responseData.post.creator,
-                    likes: responseData.post.likes
+                    creator: responseData.post.creator._id,
+                    creatorname: responseData.post.creator.username,
+                    likes: responseData.post.likes,
+                    replies: responseData.post.replies
                 };
                 console.log(responseData);
                 console.log(post)
@@ -96,10 +97,10 @@ export class PostService {
                 map(postData => {
                     return {
                         id: postData.post._id,
-                        title: postData.post.title,
                         content: postData.post.content,
                         imagePath: postData.post.imagePath,
-                        creator: postData.post.creator,
+                        creator: postData.post.creator._id,
+                        creatorname: postData.post.creator.username,
                         likes: postData.post.likes
                     }
                 }));
@@ -140,7 +141,8 @@ export class PostService {
                         title: postData.post.title,
                         content: postData.post.content,
                         imagePath: postData.post.imagePath,
-                        creator: postData.post.creator,
+                        creator: postData.post.creator._id,
+                        creatorname: postData.post.creator.username,
                         likes: postData.post.likes
                     }
                 }));

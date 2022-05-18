@@ -74,34 +74,6 @@
   border-radius: 8px;
 }
 
-.icon-button {
-  background-color: transparent;
-  margin: 0.25rem;
-  text-align: center;
-  color: #00a8ff;
-  border: none;
-  cursor: pointer;
-  border-radius: 100%;
-  padding: 0.5rem;
-  transition: background-color 0.2s;
-}
-
-.icon-button svg {
-  display: -webkit-flex;
-  /* Safari */
-  display: flex;
-  -webkit-align-items: center;
-  /* Safari 7.0+ */
-  align-items: center;
-  -webkit-justify-content: center;
-  justify-content: center;
-}
-
-.icon-button:hover {
-  background-color: #00aaff1c;
-  color: #00a8ff;
-}
-
 mat-paginator {
   margin-top: 1rem;
 }
@@ -171,12 +143,19 @@ mat-paginator {
   justify-content: center;
 }
 
-.heart {
-  color: #ff004c;
+.comment-container {
+  display: -webkit-inline-flex;
+  /* Safari */
+  display: inline-flex;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
 }
 
-.heart-count {
-  color: #ff004c;
+.comment-count {
+  color: #00a8ff;
   margin-right: 0.25rem;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -184,36 +163,4 @@ mat-paginator {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-
-.likeAnimation {
-  animation: likeAnimation 175ms linear;
-}
-
-.unlikeAnimation {
-  animation: unlikeAnimation 175ms linear;
-}
-
-@keyframes likeAnimation {
-  0% {
-    transform: scaleY(1.35);
-    opacity: 0;
-  }
-
-  100% {
-    transform: scaleY(1);
-    opacity: 1;
-  }
-}
-
-@keyframes unlikeAnimation {
-  0% {
-    transform: scaleY(1.35);
-    opacity: 0;
-  }
-
-  100% {
-    transform: scaleY(1);
-    opacity: 1;
-  }
 }

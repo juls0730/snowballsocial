@@ -17,7 +17,6 @@ export class PostCreateComponent implements OnInit {
 
     ngOnInit() {
         this.form = new FormGroup({
-            'title': new FormControl(null, { validators: [Validators.required, Validators.maxLength(50)] }),
             'content': new FormControl(null, { validators: [Validators.required] }),
             image: new FormControl(null, {  
                 validators:[],  
@@ -43,11 +42,7 @@ export class PostCreateComponent implements OnInit {
             return;
         }
 
-        if (this.form.value.title == null || this.form.value.content == null) {
-            return;
-        }
-
-        if (this.form.value.title.length > 50) {
+        if (this.form.value.content == null) {
             return;
         }
 
@@ -55,8 +50,10 @@ export class PostCreateComponent implements OnInit {
             return;
         }
 
-        this.postsService.addPost(this.form.value.title, this.form.value.content, this.form.value.image, this.authService.getUserId());
+        this.postsService.addPost(this.form.value.content, this.form.value.image, this.authService.getUserId());
         this.form.reset();
-        document.getElementById('submit-group').classList.remove('ng-submitted');
+        this.form.get('content').setErrors(null);
+        this.form.get('image').setErrors(null);
+        document.getElementById('image-name').textContent = "";
     }
 }  
