@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from "@angular/core";
+import { Component, Input, OnInit, OnDestroy, HostListener } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { Post } from '../post.model';
 import { PostService } from '../posts.service';
@@ -30,7 +30,7 @@ export class PostListComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.Loading = true;
-        this.postsService.getPosts( this.currentpage);
+        this.postsService.getPosts(this.currentpage);
         this.userId = this.authService.getUserId();
         this.PostSub = this.postsService.getPostUpdateListenetr().
             subscribe((postData: { posts: Post[], postCount: number }) => {
@@ -86,8 +86,9 @@ export class PostListComponent implements OnInit, OnDestroy {
 
     onChangedPage(pageData: PageEvent) {
         this.Loading = true;
+        console.log(pageData)
         this.currentpage = pageData.pageIndex + 1;
-        this.postsService.getPosts(this.currentpage);
+        this.postsService.addPosts(this.currentpage);
     }
 
     onDelete(postId: string) {
@@ -95,6 +96,20 @@ export class PostListComponent implements OnInit, OnDestroy {
         event.stopPropagation();
         this.Loading = true;
         this.postsService.deletePost(postId);
+    }
+
+    @HostListener('window:scroll', ['$event']) onScroll(event: any) {
+        const element = document.getElementById('posts');
+
+        const domRect = element.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - domRect.bottom;
+
+        if (spaceBelow >= -750) {
+            if ((this.totalposts / 15) > this.currentpage) {
+                this.currentpage += 1;
+                this.postsService.addPosts(this.currentpage)
+            }
+        }
     }
 
     toggleLike(postId: string) {
@@ -105,11 +120,9 @@ export class PostListComponent implements OnInit, OnDestroy {
             console.log("liked" + postData.id);
             this.posts.find(post => post.id === postData.id).likes = postData.likes;
             if (postData.likes.includes(this.userId)) {
-                heartContainer.classList.remove("unlikeAnimation");
                 heartContainer.classList.toggle("likeAnimation");
             } else {
                 heartContainer.classList.remove("likeAnimation");
-                heartContainer.classList.toggle("unlikeAnimation");
             }
         });
     }

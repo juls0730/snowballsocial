@@ -48,6 +48,37 @@ export class PostService {
             });
     }
 
+    addPosts(currentpage: number) {
+        const queryParams = `?currentpage=${currentpage}`;
+        this.http.get<{ message: string, posts: any, maxPosts: number }>('https://' + environment.api_location + '/api/posts' + queryParams)
+            .pipe(
+                map(postData => {
+                    return {
+                        posts: postData.posts.map(post => {
+                            return {
+                                content: post.content,
+                                id: post._id,
+                                imagePath: post.imagePath,
+                                creator: post.creator._id,
+                                creatorname: post.creator.username,
+                                replies: post.replies,
+                                likes: post.likes
+                            };
+                        }),
+                        maxPosts: postData.maxPosts
+                    };
+                })
+            )
+            .subscribe((transformedPostsData) => {
+                console.log(transformedPostsData);
+                this.posts = this.posts.concat(transformedPostsData.posts);
+                this.postUpdated.next({
+                    posts: [...this.posts],
+                    postCount: transformedPostsData.maxPosts
+                });
+            });
+    }
+
     getPostUpdateListenetr() {
         return this.postUpdated.asObservable();
     }
@@ -72,7 +103,8 @@ export class PostService {
                 };
                 console.log(responseData);
                 console.log(post)
-                this.posts.push(post);
+                // put new post at the begging of the array
+                this.posts.unshift(post)
                 this.postUpdated.next({
                     posts: [...this.posts],
                     postCount: responseData.post.maxPosts

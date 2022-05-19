@@ -8,6 +8,7 @@ import { Post } from "../post.model";
 import { Reply } from "../reply.model";
 import { PostService } from "../posts.service";
 import { ReplyService } from "../reply.service";
+import { Meta } from "@angular/platform-browser";
 
 @Component({
     selector: "app-show-post",
@@ -16,7 +17,7 @@ import { ReplyService } from "../reply.service";
 })
 
 export class PostShowComponent implements OnInit {
-    constructor(private postsService: PostService, private route: ActivatedRoute, private router: Router, private authService: AuthService, private replyService: ReplyService) {
+    constructor(private postsService: PostService, private route: ActivatedRoute, private router: Router, private authService: AuthService, private replyService: ReplyService, private meta: Meta) {
         this.postsService = postsService;
     }
     post: Post;
@@ -45,6 +46,7 @@ export class PostShowComponent implements OnInit {
                 this.post = postData;
                 this.Loading = false;
                 this.getReplies(post_id);
+                this.addMetaTags();
             })
         })
         this.userId = this.authService.getUserId();
@@ -157,5 +159,18 @@ export class PostShowComponent implements OnInit {
         this.replyService.getReplies(1, 1, postId).subscribe(repliesData => {
             this.replies = this.replies.concat(repliesData)[0].replies;
         })
+    }
+
+    addMetaTags() {
+        this.meta.addTag({ name: 'description', content: this.post.content.substring(0, 25) })
+        this.meta.addTag({ name: 'url', content: 'https://test.juls07.dev/post/' + this.post.id })
+        this.meta.addTag({ name: 'og:title', content: 'Snowball social' })
+        this.meta.addTag({ name: 'og:url', content: 'https://test.juls07.dev/post/' + this.post.id })
+        this.meta.addTag({ name: 'og:site_name', content: 'Snowball social' })
+        this.meta.addTag({ name: 'og:description', content: this.post.content.substring(0, 25) }) 
+        // this.meta.addTag({ name: keywords, content: this.post.tags })
+        if (this.post.imagePath) {
+           this.meta.addTag({ name: 'og:image', content: this.post.imagePath.toString() })
+        }
     }
 }

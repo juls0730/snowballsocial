@@ -21,8 +21,26 @@ export class UserService {
 
     getUserPosts(id: string) {
         return this.http.get<{
-            posts: Post
-        }>(`https://${environment.api_location}/api/user/${id}/posts`);
+            posts: any[]
+        }>(`https://${environment.api_location}/api/user/${id}/posts`)
+        .pipe(
+            map(postData => {
+                return {
+                    posts: postData.posts.map(post => {
+                        return {
+                            content: post.content,
+                            id: post._id,
+                            imagePath: post.imagePath,
+                            creator: post.creator._id,
+                            creatorname: post.creator.username,
+                            replies: post.replies,
+                            likes: post.likes
+                        };
+                    }),
+                    //maxPosts: postData.maxPosts
+                };
+            })
+        );
     }
 
     followUser(id: string) {

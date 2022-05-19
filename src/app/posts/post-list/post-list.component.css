@@ -74,11 +74,6 @@
   border-radius: 8px;
 }
 
-mat-paginator {
-  margin-top: 1rem;
-}
-
-
 .dropdown-content {
   background-color: var(--md-sys-color-background);
   color: var(--md-sys-color-on-background);

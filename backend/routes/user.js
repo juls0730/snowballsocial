@@ -127,36 +127,30 @@ router.get('/:id', (req, res, next) => {
 })
 
 router.get('/:id/posts', (req, res, next) => {
-    user.findById({ _id: req.params.id }, '-password, -email').exec((err, user) => {
-        if (!user) {
-            return res.status(404).json({
-                message: "User not found"
-            });
-        }
-
+    post.find({ creator: req.params.id }).lean().exec((err, posts) => {
         if (err) {
             return res.status(500).json({
-                message: "Cannot fetch user!"
-            });
+                message: "Internal server error"
+            })
         }
 
-        post.find({ creator: user._id }).exec((err, posts) => {
-            if (!posts) {
-                return res.status(404).json({
-                    message: "No posts found"
-                });
-            }
-
-            if (err) {
-                return res.status(500).json({
-                    message: "Cannot fetch posts!"
-                });
-            }
-
-            return res.status(200).json({
-                posts: posts
-            });
-        })
+        for (let i = 0; i < posts.length; i++) {
+            user.findById(posts[i].creator, '-password -__v -followers -following -email', function (err, user) {
+                if (err) {
+                    return res.status(500).json({
+                        message: "Fetching posts failed"
+                    });
+                }
+                posts[i].creator = user;
+                if (i === posts.length - 1) {
+                    // maxPosts: maxPosts
+                    return res.status(200).json({
+                        message: "Posts fetched successfully",
+                        posts: posts,
+                    });
+                }
+            })
+        }
     })
 })
 

@@ -1,4 +1,4 @@
-<div multi="true" *ngIf="posts.length">
+<div multi="true" (scroll)="onScroll($event)" id="posts" *ngIf="posts.length">
     <div class="post-div" *ngFor="let post of posts" (click)="gotoPost(post.id)">
         <a class="username" routerLink="/user/{{post.creator}}">
             by: {{post.creatorname}}
@@ -79,6 +79,4 @@
         <div></div>
     </div>
 </div>
-<mat-paginator [length]=" totalposts" [pageSize]="15" (page)="onChangedPage($event)" *ngIf="posts.length > 0">
-</mat-paginator>
 <p *ngIf="posts.length <= 0 && !Loading" class="info-text"> No post added yet! </p>

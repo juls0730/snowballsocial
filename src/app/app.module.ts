@@ -1,9 +1,6 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatDialogModule } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; import { AppComponent } from './app.component';
@@ -35,9 +32,6 @@ import { UserShowComponent } from './users/user-show/user-show.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    MatPaginatorModule,
-    BrowserAnimationsModule,
-    MatDialogModule,
     AppRoutingModule
   ],
   providers: [{
