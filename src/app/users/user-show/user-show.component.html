@@ -26,7 +26,7 @@
             <img [src]="post.imagePath" [alt]="post.content.substring(0, 10)" loading="lazy">
         </div>
         <div class="post-actions">
-            <div class="heart-container">
+            <div *ngIf="userIsAuthenticated" class="heart-container">
                 <button class="icon-button heartbtn" id="heartbtn" (click)="toggleLike(post.id)">
                     <div :id="heart-container{{post.id}}">
                         <div *ngIf="post.likes.includes(userId) == false" class="heart">

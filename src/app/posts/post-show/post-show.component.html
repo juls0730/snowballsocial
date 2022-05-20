@@ -5,7 +5,7 @@
     <p class="post-text">{{post.content}}</p>
     <img class="post-image" *ngIf="post.imagePath" [src]="post.imagePath" [alt]="post.content.substring(0, 10)"
         loading="lazy">
-    <div class="post-actions">
+    <div *ngIf="userIsAuthenticated" class="post-actions">
         <div class="heart-container">
             <button class="icon-button heartbtn" (click)="toggleLike(post.id)">
                 <div id="heart-container">
@@ -60,7 +60,7 @@
     </div>
 </div>
 <hr />
-<div>
+<div *ngIf="userIsAuthenticated">
     <form (submit)="onAddReply(post.id)" [formGroup]="form" #replyForm="ngForm" id="submit-reply-group">
         <div class="floating-label-wrap">
             <textarea name="reply" type="text" id="reply" formControlName="reply" class="floating-label-field"
@@ -77,9 +77,10 @@
 </div>
 <div multi="true" *ngIf="replies.length > 0">
     <div class="post-div" *ngFor="let reply of replies">
+        <p class="username" routerLink="/user/{{reply.creator._id}}">by: {{reply.creator.username}}</p>
         <p class="post-text">{{reply.content}}</p>
         <div class="post-actions">
-            <div class="heart-container">
+            <div *ngIf="userIsAuthenticated" class="heart-container">
                 <button class="icon-button heartbtn" (click)="toggleReplyLike(reply.id)">
                     <div :id="heart-container{{reply.id}}">
                         <div *ngIf="reply.likes.includes(userId) == false" class="heart">

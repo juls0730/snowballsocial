@@ -344,25 +344,43 @@ router.put("/:id/togglelike", checkAuth, (req, res, next) => {
     })
 })
 
-router.get('/:postId/replies', checkAuth, (req, res, next) => {
+router.get('/:postId/replies', (req, res, next) => {
     if (!req.params.postId) {
         return res.status(400).json({
             message: "Post Id is required"
         });
     }
     replymodel.find({ post: req.params.postId })
-        .then(replies => {
-            res.status(200).json({
-                message: "Replies fetched successfully",
-                replies: replies
-            });
+        .lean().exec((err, replies) => {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Internal server error'
+                })
+            }
+
+            if (replies.length <= 0) {
+                return res.status(500).json({
+                    message: 'Internal server error'
+                })
+            }
+
+            for (let i = 0; i < replies.length; i++) {
+                usermodel.findById(replies[i].creator, '-password -__v -followers -following -email', function (err, user) {
+                    if (err) {
+                        return res.status(500).json({
+                            message: "Fetching replies failed"
+                        });
+                    }
+                    replies[i].creator = user;
+                    if (i === replies.length - 1) {
+                        return res.status(200).json({
+                            message: "Replies fetched successfully",
+                            replies: replies,
+                        });
+                    }
+                })
+            }
         })
-        .catch(err => {
-            res.status(500).json({
-                message: "Failed to fetch replies",
-                error: err
-            });
-        });
 })
 
 router.post('/:postId/reply', multer({ storage: repliesStorage }).single("image"), checkAuth, (req, res, next) => {
