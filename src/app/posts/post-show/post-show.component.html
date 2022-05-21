@@ -103,7 +103,7 @@
                 </button>
                 <label class="heart-count">{{reply.likes.length}}</label>
             </div>
-            <button *ngIf="userIsAuthenticated && userId === reply.creator" (click)="openDropdown(reply.id + '-1')"
+            <button *ngIf="userIsAuthenticated && userId === reply.creator._id" (click)="openDropdown(reply.id + '-1')"
                 id="dropbtn" class="icon-button">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -9 24 24" width="24" fill="currentColor">
                     <path
@@ -111,7 +111,7 @@
                     </path>
                 </svg>
             </button>
-            <div *ngIf="userIsAuthenticated && userId === reply.creator" :id="dropdown{{reply.id}}-1"
+            <div *ngIf="userIsAuthenticated && userId === reply.creator._id" :id="dropdown{{reply.id}}-1"
                 class="dropdown-content">
                 <a class="dropdown-item" (click)="onDeleteReply(reply.id)">Delete Reply</a>
             </div>

@@ -1,7 +1,8 @@
 // this is where we define the routes and the controllers for the backend, having a vulnerability in the backend can be a security risk be careful what you write
 const express = require("express");
+const asyncify = require("express-asyncify")
 const user = require("../models/user");
-const router = express.Router();
+const router = asyncify(express.Router());
 const bcrypt = require("bcrypt");
 const rateLimit = require('express-rate-limit');
 const jwt = require("jsonwebtoken");
@@ -18,28 +19,27 @@ const loginLimiter = rateLimit({
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
 
-router.post("/signup", (req, res, next) => {
-    bcrypt.hash(req.body.password, 10)
-        .then(hash => {
-            console.log(req.body)
+router.post("/signup", async (req, res, next) => {
+    await bcrypt.hash(req.body.password, 10)
+        .then(async (hash) => {
             const NewUser = user({
                 email: req.body.email,
                 username: req.body.username,
                 password: hash
             });
-            user.find({ $or: [{ email: req.body.email }, { username: req.body.username }] })
-                .then(user => {
+            await user.find({ $or: [{ email: req.body.email }, { username: req.body.username }] })
+                .then(async (user) => {
                     if (user.length >= 1) {
                         return res.status(409).json({
                             message: "User already exists"
                         });
                     }
                 })
-            NewUser.save()
-                .then(result => {
+            await NewUser.save()
+                .then(async (result) => {
                     return res.status(201).json({
                         message: "User Created",
-                        result: result
+                        result: await result
                     });
                 });
         }).catch(err => {
@@ -50,23 +50,22 @@ router.post("/signup", (req, res, next) => {
 });
 
 let fetchedUser;
-router.post("/login", loginLimiter, (req, res, next) => {
-    user.findOne({ $or: [{ email: req.body.usernameemail }, { username: req.body.usernameemail }] })
-        .then(user => {
+router.post("/login", loginLimiter, async (req, res, next) => {
+    await user.findOne({ $or: [{ email: req.body.usernameemail }, { username: req.body.usernameemail }] })
+        .then(async (user) => {
             if (!user) {
                 return res.status(404).json({
                     message: "User not found"
                 });
             }
-            fetchedUser = user;
-            console.log(fetchedUser)
-            return bcrypt.compare(req.body.password, user.password)
+            fetchedUser = await user;
+            return await bcrypt.compare(req.body.password, user.password)
         })
-        .then(result => {
+        .then(async (result) => {
             if (!result) {
                 return res.status(403).json({
                     message: "Auth failed",
-                    result: result
+                    result: await result
                 });
             }
 
@@ -88,9 +87,9 @@ router.post("/login", loginLimiter, (req, res, next) => {
                 }
             );
             return res.status(200).json({
-                token: token,
+                token: await token,
                 expiresIn: 604800,
-                userId: fetchedUser._id
+                userId: await fetchedUser._id
             });
         }).catch(err => {
             if (!err) {
@@ -105,11 +104,11 @@ router.post("/login", loginLimiter, (req, res, next) => {
         })
 })
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
     // find user and remove password from the response
 
-    user.findById({ _id: req.params.id }, '-password, -email')
-        .then(user => {
+    await user.findById({ _id: req.params.id }, '-password, -email')
+        .then(async (user) => {
             if (!user) {
                 return res.status(404).json({
                     message: "User not found"
@@ -117,7 +116,7 @@ router.get('/:id', (req, res, next) => {
             }
 
             return res.status(200).json({
-                user: user
+                user: await user
             });
         }).catch(err => {
             return res.status(500).json({
@@ -126,8 +125,8 @@ router.get('/:id', (req, res, next) => {
         })
 })
 
-router.get('/:id/posts', (req, res, next) => {
-    post.find({ creator: req.params.id }).lean().exec((err, posts) => {
+router.get('/:id/posts', async (req, res, next) => {
+    await post.find({ creator: req.params.id }).lean().exec(async (err, posts) => {
         if (err) {
             return res.status(500).json({
                 message: "Internal server error"
@@ -135,18 +134,18 @@ router.get('/:id/posts', (req, res, next) => {
         }
 
         for (let i = 0; i < posts.length; i++) {
-            user.findById(posts[i].creator, '-password -__v -followers -following -email', function (err, user) {
+            user.findById(posts[i].creator, '-password -__v -followers -following -email', async function (err, user) {
                 if (err) {
                     return res.status(500).json({
                         message: "Fetching posts failed"
                     });
                 }
-                posts[i].creator = user;
+                posts[i].creator = await user;
                 if (i === posts.length - 1) {
                     // maxPosts: maxPosts
                     return res.status(200).json({
                         message: "Posts fetched successfully",
-                        posts: posts,
+                        posts: await posts,
                     });
                 }
             })
@@ -154,13 +153,13 @@ router.get('/:id/posts', (req, res, next) => {
     })
 })
 
-router.post('/:userId/togglefollow', checkAuth, (req, res, next) => {
+router.post('/:userId/togglefollow', checkAuth, async (req, res, next) => {
     if (!req.userData.userId) {
         return res.status(401).json({
             message: "Auth failed"
         });
     }
-    user.findById({ _id: req.params.userId }, '-password, -email').exec((err, fetchedUserasd) => {
+    await user.findById({ _id: req.params.userId }, '-password, -email').exec(async (err, fetchedUserasd) => {
         if (!user) {
             return res.status(404).json({
                 message: "User not found"
@@ -179,15 +178,15 @@ router.post('/:userId/togglefollow', checkAuth, (req, res, next) => {
             });
         }
 
-        if (fetchedUserasd.followers.includes(req.userData.userId)) {
-            user.updateOne({ _id: req.params.userId }, { $pull: { followers: req.userData.userId } }, (err, result) => {
+        if (await fetchedUserasd.followers.includes(req.userData.userId)) {
+            user.updateOne({ _id: req.params.userId }, { $pull: { followers: req.userData.userId } }, async (err, result) => {
                 if (err) {
                     return res.status(500).json({
                         message: "Cannot unfollow user"
                     });
                 }
 
-                user.updateOne({ _id: req.userData.userId }, { $pull: { following: req.params.userId } }, (err, result) => {
+                user.updateOne({ _id: req.userData.userId }, { $pull: { following: req.params.userId } }, async (err, result) => {
                     if (err) {
                         return res.status(500).json({
                             message: "Cannot unfollow user"
@@ -200,14 +199,14 @@ router.post('/:userId/togglefollow', checkAuth, (req, res, next) => {
                 })
             })
         } else {
-            user.updateOne({ _id: req.params.userId }, { $push: { followers: req.userData.userId } }, (err, result) => {
+            user.updateOne({ _id: req.params.userId }, { $push: { followers: req.userData.userId } }, async (err, result) => {
                 if (err) {
                     return res.status(500).json({
                         message: "Cannot follow user!"
                     });
                 }
 
-                user.updateOne({ _id: req.userData.userId }, { $push: { following: req.params.userId } }, (err, result) => {
+                user.updateOne({ _id: req.userData.userId }, { $push: { following: req.params.userId } }, async (err, result) => {
                     if (err) {
                         return res.status(500).json({
                             message: "Cannot follow user!"

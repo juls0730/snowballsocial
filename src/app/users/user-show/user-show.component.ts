@@ -34,7 +34,7 @@ export class UserShowComponent implements OnInit {
         this.route.paramMap.subscribe((params: ParamMap) => {
             let user_id = params.get('id');
 
-            return this.userService.getUser(user_id).subscribe(user => {
+            this.userService.getUser(user_id).subscribe(user => {
                 this.user = user.user;
                 this.Loading = false;
                 if (this.user.followers.includes(this.authService.getUserId())) {
@@ -44,23 +44,17 @@ export class UserShowComponent implements OnInit {
                     this.isCurrentUser = true;
                 }
             });
-        })
 
-        this.route.paramMap.subscribe((params: ParamMap) => {
-            let user_id = params.get('id');
-
-            return this.userService.getUserPosts(user_id)
+            this.userService.getUserPosts(user_id)
             .subscribe(posts => {
                 this.posts = this.posts.concat(posts.posts);
                 this.PostsLoading = false;
             })
         })
-
         window.onclick = function (event) {
             if (!event.target.matches('#dropbtn')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
-                var i;
-                for (i = 0; i < dropdowns.length; i++) {
+                for (let i = 0; i < dropdowns.length; i++) {
                     var openDropdown = dropdowns[i];
                     if (openDropdown.classList.contains('show')) {
                         openDropdown.classList.remove('show');
@@ -82,7 +76,6 @@ export class UserShowComponent implements OnInit {
     }
 
     toggleLike(postId: string) {
-        event.preventDefault();
         event.stopPropagation();
         this.postsService.toggleLike(postId).subscribe((postData) => {
             let heartContainer = document.getElementById("heart-container" + postId);
@@ -101,21 +94,18 @@ export class UserShowComponent implements OnInit {
     }
 
     onDelete(postId: string) {
-        event.preventDefault();
         event.stopPropagation();
         this.Loading = true;
         this.postsService.deletePost(postId);
     }
 
     copyLink(id: string) {
-        event.preventDefault();
         event.stopPropagation();
         navigator.clipboard.writeText(`https://` + environment.server_location + `/post/${id}`);
         document.getElementById("dropdown" + id + "-1").classList.remove("show");
     }
 
     openDropdown(dropdownNum: string) {
-        event.preventDefault();
         event.stopPropagation();
         console.log("attempetd to oppen: dropdown" + dropdownNum)
         document.getElementById("dropdown" + dropdownNum).classList.toggle("show");

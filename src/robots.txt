@@ -1,0 +1,12 @@
+User-agent: msnbot
+Crawl-delay: 120
+
+User-agent: *
+Crawl-delay: 2
+Disallow: /$
+
+User-agent: discobot
+Disallow: /
+
+User-agent: Slurp
+Crawl-delay: 50

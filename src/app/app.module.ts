@@ -11,7 +11,6 @@ import { logincomponent } from './authentication/login/login.component';
 import { signupcomponent } from './authentication/signup/signup.component';
 import { AuthInterceptor } from './authentication/auth-interceptor';
 import { ErrorInterceptor } from './error-interceptor';
-import { ErrorComponent } from './error/error.component';
 import { PostShowComponent } from './posts/post-show/post-show.component';
 import { UserShowComponent } from './users/user-show/user-show.component';
 
@@ -39,6 +38,6 @@ import { UserShowComponent } from './users/user-show/user-show.component';
     useClass: AuthInterceptor, multi: true
   }, CookieService, { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }],
   bootstrap: [AppComponent],
-  entryComponents: [ErrorComponent]
+  entryComponents: []
 })
 export class AppModule { }

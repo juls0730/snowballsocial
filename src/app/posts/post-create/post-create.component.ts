@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PostService } from '../posts.service';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { mimetype } from "./mime-type.validator";  
+import { mimetype } from "./mime-type.validator";
 import { AuthService } from 'src/app/authentication/auth.service';
 
 @Component({
@@ -18,10 +18,10 @@ export class PostCreateComponent implements OnInit {
     ngOnInit() {
         this.form = new FormGroup({
             'content': new FormControl(null, { validators: [Validators.required] }),
-            image: new FormControl(null, {  
-                validators:[],  
-                asyncValidators: [mimetype]  
-      })    // we make it empty so that it will not be required
+            image: new FormControl(null, {
+                validators: [],
+                asyncValidators: [mimetype]
+            })    // we make it empty so that it will not be required
         });
     }
 
@@ -42,11 +42,7 @@ export class PostCreateComponent implements OnInit {
             return;
         }
 
-        if (this.form.value.content == null) {
-            return;
-        }
-
-        if (this.form.value.content.length > 500) {
+        if (this.form.value.content == null || this.form.value.content.length > 500) {
             return;
         }
 

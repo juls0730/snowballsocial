@@ -5,8 +5,10 @@
         <span class="followers">Followers: <b>{{user.followers.length}}</b></span><span>Follwoing:
             <b>{{user.following.length}}</b></span>
     </div>
-    <button (click)="toggleFollow()" *ngIf="!isCurrentUser"><span *ngIf="following">unFollow</span><span
-            *ngIf="!following">Follow</span></button>
+    <button (click)="toggleFollow()" class="icon-button" *ngIf="!isCurrentUser">
+        <span *ngIf="following">unFollow</span>
+        <span *ngIf="!following">Follow</span>
+    </button>
 </div>
 <div *ngIf="Loading">
     <div class="lds-ring">

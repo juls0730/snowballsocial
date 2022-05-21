@@ -23,10 +23,8 @@ export class PostListComponent implements OnInit, OnDestroy {
     private PostSub: Subscription;
     userIsAuthenticated: boolean;
 
-    constructor(public postsService: PostService, private authService: AuthService, private router: Router) {
-        this.postsService = postsService;
-    }
-    Loading = false //This is property  
+    constructor(public postsService: PostService, private authService: AuthService, private router: Router) { }
+    Loading = false
 
     ngOnInit() {
         this.Loading = true;
@@ -47,8 +45,7 @@ export class PostListComponent implements OnInit, OnDestroy {
         window.onclick = function (event) {
             if (!event.target.matches('#dropbtn')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
-                var i;
-                for (i = 0; i < dropdowns.length; i++) {
+                for (let i = 0; i < dropdowns.length; i++) {
                     var openDropdown = dropdowns[i];
                     if (openDropdown.classList.contains('show')) {
                         openDropdown.classList.remove('show');
@@ -59,18 +56,14 @@ export class PostListComponent implements OnInit, OnDestroy {
     }
 
     copyLink(id: string) {
-        event.preventDefault();
         event.stopPropagation();
         navigator.clipboard.writeText(`https://` + environment.server_location + `/post/${id}`);
         document.getElementById("dropdown" + id + "-1").classList.remove("show");
     }
 
     openDropdown(dropdownNum: string) {
-        event.preventDefault();
         event.stopPropagation();
-        console.log("attempetd to oppen: dropdown" + dropdownNum)
         document.getElementById("dropdown" + dropdownNum).classList.toggle("show");
-        console.log("oppened: " + "dropdown" + dropdownNum)
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (let i = 0; i < dropdowns.length; i++) {
             var openDropdown = dropdowns[i];
@@ -86,13 +79,11 @@ export class PostListComponent implements OnInit, OnDestroy {
 
     onChangedPage(pageData: PageEvent) {
         this.Loading = true;
-        console.log(pageData)
         this.currentpage = pageData.pageIndex + 1;
         this.postsService.addPosts(this.currentpage);
     }
 
     onDelete(postId: string) {
-        event.preventDefault();
         event.stopPropagation();
         this.Loading = true;
         this.postsService.deletePost(postId);
@@ -113,11 +104,9 @@ export class PostListComponent implements OnInit, OnDestroy {
     }
 
     toggleLike(postId: string) {
-        event.preventDefault();
         event.stopPropagation();
         this.postsService.toggleLike(postId).subscribe((postData) => {
             let heartContainer = document.getElementById("heart-container" + postId);
-            console.log("liked" + postData.id);
             this.posts.find(post => post.id === postData.id).likes = postData.likes;
             if (postData.likes.includes(this.userId)) {
                 heartContainer.classList.toggle("likeAnimation");

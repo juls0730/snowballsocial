@@ -17,9 +17,7 @@ import { Meta } from "@angular/platform-browser";
 })
 
 export class PostShowComponent implements OnInit {
-    constructor(private postsService: PostService, private route: ActivatedRoute, private router: Router, private authService: AuthService, private replyService: ReplyService, private meta: Meta) {
-        this.postsService = postsService;
-    }
+    constructor(private postsService: PostService, private route: ActivatedRoute, private router: Router, private authService: AuthService, private replyService: ReplyService, private meta: Meta) { }
     post: Post;
     replies: any[] = [];
     Loading = false
@@ -34,10 +32,6 @@ export class PostShowComponent implements OnInit {
         this.Loading = true;
         this.form = new FormGroup({
             'reply': new FormControl(null, { validators: [Validators.required, Validators.maxLength(500)] }),
-            /*image: new FormControl(null, {
-                validators: [],
-                asyncValidators: [mimetype]
-            })    // we make it empty so that it will not be required*/
         });
         this.route.paramMap.subscribe((params: ParamMap) => {
             let post_id = params.get('id');
@@ -59,8 +53,7 @@ export class PostShowComponent implements OnInit {
         window.onclick = function (event) {
             if (!event.target.matches('#dropbtn')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
-                var i;
-                for (i = 0; i < dropdowns.length; i++) {
+                for (let i = 0; i < dropdowns.length; i++) {
                     var openDropdown = dropdowns[i];
                     if (openDropdown.classList.contains('show')) {
                         openDropdown.classList.remove('show');
@@ -71,16 +64,12 @@ export class PostShowComponent implements OnInit {
     }
 
     copyLink(id: string) {
-        event.preventDefault();
-        event.stopPropagation();
         navigator.clipboard.writeText(`https://` + environment.server_location + `/post/${id}`);
         document.getElementById("dropdown" + id + "-1").classList.remove("show");
     }
 
     onDelete(postId: string) {
-        this.Loading = true;
         this.postsService.deletePost(postId);
-        this.Loading = false;
         this.router.navigate(["/"])
     }
 
@@ -89,9 +78,6 @@ export class PostShowComponent implements OnInit {
     }
 
     openDropdown(dropdownNum: string) {
-        event.preventDefault();
-        event.stopPropagation();
-        console.log("dropdown" + dropdownNum)
         document.getElementById("dropdown" + dropdownNum).classList.toggle("show");
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (let i = 0; i < dropdowns.length; i++) {
@@ -103,38 +89,28 @@ export class PostShowComponent implements OnInit {
     }
 
     toggleLike(postId: string) {
-        event.preventDefault();
-        event.stopPropagation();
         this.postsService.toggleLike(postId).subscribe((postData) => {
             let heartContainer = document.getElementById("heart-container");
-            console.log("liked" + postData.id);
             this.liked = !this.liked;
             this.post.likes = postData.likes;
             if (postData.likes.includes(this.userId)) {
-                heartContainer.classList.remove("unlikeAnimation");
                 heartContainer.classList.toggle("likeAnimation");
             } else {
                 heartContainer.classList.remove("likeAnimation");
-                heartContainer.classList.toggle("unlikeAnimation");
             }
         });
     }
 
     toggleReplyLike(replyId: string) {
-        event.preventDefault();
-        event.stopPropagation();
         this.replyService.toggleLike(replyId).subscribe((replyData) => {
             let heartContainer = document.getElementById("heart-container" + replyId);
-            console.log("liked" + replyData.id);
             this.liked = !this.liked;
             const reply = this.replies.find(reply => reply.id === replyData.id);
             reply.likes = replyData.likes;
             if (replyData.likes.includes(this.userId)) {
-                heartContainer.classList.remove("unlikeAnimation");
                 heartContainer.classList.toggle("likeAnimation");
             } else {
                 heartContainer.classList.remove("likeAnimation");
-                heartContainer.classList.toggle("unlikeAnimation");
             }
         });
     }
@@ -144,11 +120,9 @@ export class PostShowComponent implements OnInit {
             return;
         }
 
-        console.log("reply: " + this.form.value.reply);
         this.replyService.addReply(postId, this.form.value.reply)
             .subscribe(responseData => {
                 const reply = responseData.reply;
-                console.log(reply)
                 this.replies.push(reply);
                 document.getElementById('submit-reply-group').classList.remove('ng-submitted');
             });
@@ -162,15 +136,20 @@ export class PostShowComponent implements OnInit {
     }
 
     addMetaTags() {
-        this.meta.addTag({ name: 'description', content: this.post.content.substring(0, 25) })
+        this.meta.addTag({ name: 'description', content: this.post.content.substring(0, 25) + '...' })
         this.meta.addTag({ name: 'url', content: 'https://test.juls07.dev/post/' + this.post.id })
-        this.meta.addTag({ name: 'og:title', content: 'Snowball social' })
         this.meta.addTag({ name: 'og:url', content: 'https://test.juls07.dev/post/' + this.post.id })
         this.meta.addTag({ name: 'og:site_name', content: 'Snowball social' })
-        this.meta.addTag({ name: 'og:description', content: this.post.content.substring(0, 25) }) 
+        this.meta.addTag({ name: 'og:description', content: this.post.content.substring(0, 25) + '...' }) 
+        this.meta.addTag({ name: 'og:type', content: 'website' })
+        this.meta.addTag({ name: 'twitter:card', content: 'summary' })
+        this.meta.addTag({ name: 'twitter:title', content: 'Snowball social' })
+        this.meta.addTag({ name: 'twitter:description', content: this.post.content.substring(0, 25) + '...' }) 
+        this.meta.addTag({ name: 'twitter:url', content: 'https://test.juls07.dev/post/' + this.post.id })
         // this.meta.addTag({ name: keywords, content: this.post.tags })
         if (this.post.imagePath) {
            this.meta.addTag({ name: 'og:image', content: this.post.imagePath.toString() })
+           this.meta.addTag({ name: 'twitter:image', content: this.post.imagePath.toString() })
         }
     }
 }

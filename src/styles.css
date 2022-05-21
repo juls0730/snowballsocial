@@ -173,6 +173,7 @@ body {
 }
 
 a {
+  color: var(--md-sys-color-on-background);
   text-decoration: none;
 }
 

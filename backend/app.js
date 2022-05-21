@@ -1,5 +1,6 @@
+const asyncify = require("express-asyncify")
 const express = require('express');
-const app = express();
+const app = asyncify(express());
 const bodyParser = require('body-parser');
 const postroutes = require('./routes/posts');
 const userRoutes = require("./routes/user");
@@ -10,6 +11,7 @@ var compression = require('compression');
 const helmet = require('helmet')
 const fs = require('fs')
 require('dotenv').config({ path: __dirname + '/.env' });
+const imageTTL = 86400000 * 30
 imageDirs = ['posts', 'replies', 'users']
 
 mongoose.connect('mongodb://localhost:27017/snowballsocial')
@@ -48,7 +50,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use("/images", express.static(path.join("backend/images")));
+app.use("/images", express.static(path.join("backend/images"), {
+    maxAge: imageTTL
+}));
 
 app.use("/api/posts", postroutes);
 app.use("/api/user", userRoutes);
@@ -69,13 +73,11 @@ app.use(function (req, res, next) {
 
 for (let i = 0; i < imageDirs.length; i++) {
     if (fs.existsSync(path.join(__dirname, 'images/' + imageDirs[i]))) {
-        console.log('didnt make image Dir ' + imageDirs[i])
     } else {
         fs.mkdir(path.join(__dirname, 'images/' + imageDirs[i]), (err) => {
             if (err) {
                 return console.error(err);
             }
-            console.log('Image Dir ' + imageDirs[i] + ' created');
         })
     }
 }

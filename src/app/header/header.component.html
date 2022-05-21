@@ -15,7 +15,7 @@
             </li>
         </div>
     </ul>
-    <div *ngIf="!Loading && userIsAuthenticated" id="dropdown-content-user" class="dropdown-user">
+    <div *ngIf="!Loading && userIsAuthenticated && curuser" id="dropdown-content-user" class="dropdown-user">
         <div class="dropdown-user-info">
             <img src="https://unsplash.com/photos/gN0yrOzZMDc/download?ixid=MnwxMjA3fDB8MXxhbGx8NHx8fHx8fDJ8fDE2NTI4MjMwMjY&force=true&w=640"
                 height="64" class="pfp pfp-dropdown" width="64">
@@ -82,7 +82,8 @@
         <li><a (click)="slideOutNav()" routerLink="/">Home</a></li>
         <li *ngIf="!userIsAuthenticated"><a (click)="slideOutNav()" routerLink="/login">Log In</a></li>
         <li *ngIf="!userIsAuthenticated"><a (click)="slideOutNav()" routerLink="/signup">Sign Up</a></li>
-        <li *ngIf="userIsAuthenticated"><a href="#" (click)="[slideOutNav(), onLogout()]">Logout</a></li>
+        <li *ngIf="userIsAuthenticated"><a (click)="[slideOutNav(), goto('user/' + this.userId)]">Profile</a></li>
+        <li *ngIf="userIsAuthenticated"><a (click)="[slideOutNav()]">Setings</a></li>
+        <li *ngIf="userIsAuthenticated"><a (click)="[slideOutNav(), onLogout()]">Logout</a></li>
     </ul>
 </div>
-<div class="overlay" id="overlay"></div>

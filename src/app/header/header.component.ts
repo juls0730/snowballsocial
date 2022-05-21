@@ -22,33 +22,50 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     slideOutNav() {
         document.getElementById('slideoutnav').classList.toggle('active');
-        document.getElementById('overlay').classList.toggle('overlay-active');
     }
 
     onLogout() {
         this.userIsAuthenticated = false;
-        this.Loading = true;
         this.curuser = null;
         this.userId = null;
         this.authService.logout();
-        this.router.navigate(['/login']);
     }
 
     ngOnInit() {
+        this.userIsAuthenticated = this.authService.getIsAuth();
         this.Loading = true;
-        this.userIsAuthenticated = this.authService.getIsAuth(); // prevent nav from desyncing when user is autotically logged in 
+        this.userId = this.authService.getUserId();
         if (this.userIsAuthenticated) {
-            this.initDropdown()
+        this.userService.getUser(this.userId).subscribe(
+            (userData: any) => {
+                this.curuser = userData.user;
+                this.Loading = false;
+            });
         }
         this.authListenerSubs = this.authService.getAuthStatusListener()
             .subscribe(isAuthenticated => {
                 this.userIsAuthenticated = isAuthenticated;
-                this.initDropdown()
-            });    // this is to get the auth status from the auth service
+                this.userId = this.authService.getUserId();
+                this.userService.getUser(this.userId).subscribe(
+                    (userData: any) => {
+                        this.curuser = userData.user;
+                        this.Loading = false;
+                    });
+            });
     }
 
     ngOnDestroy() {
         this.authListenerSubs.unsubscribe();
+    }
+
+    waitFor(conditionFunction) {
+
+        const poll = resolve => {
+            if (conditionFunction()) resolve();
+            else setTimeout(_ => poll(resolve), 400);
+        }
+
+        return new Promise(poll);
     }
 
     openDropdown() {
@@ -67,24 +84,4 @@ export class HeaderComponent implements OnInit, OnDestroy {
     goto(route: string) {
         this.router.navigate([route])
     }
-
-    closeDropdown() {
-        if (this.userIsAuthenticated && !this.Loading) {
-            var dropdown = document.getElementById("dropdown-content-user");
-            dropdown.classList.remove('leaving');
-            dropdown.classList.remove('active');
-            this.dropdownOpen = false;
-        }
-    }
-
-    initDropdown() {
-        if (this.userIsAuthenticated) {
-            this.userId = this.authService.getUserId();
-            this.userService.getUser(this.userId).subscribe(
-                (userData: any) => {
-                    this.curuser = userData.user;
-                    this.Loading = false
-                });
-        }
-    }
-}  
+}
