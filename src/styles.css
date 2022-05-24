@@ -210,6 +210,8 @@ main {
   line-height: var(--md-sys-typescale-body1-line-height);
   letter-spacing: var(--md-sys-typescale-body1-tracking);
   font-weight: 700;
+  margin: 0;
+  width: fit-content;
 }
 
 .username a:hover {

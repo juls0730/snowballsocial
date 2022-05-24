@@ -7,6 +7,7 @@ import { signupcomponent } from './authentication/signup/signup.component';
 import { AuthGuard } from './authentication/auth.guard';
 import { PostShowComponent } from './posts/post-show/post-show.component';
 import { UserShowComponent } from './users/user-show/user-show.component';
+import { UserSettingComponent } from './users/user-setting/user-setting.component';
 
 const routes: Routes = [
   { path: '', component: PostCreateComponent, canActivate:[AuthGuard] },
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'login', component: logincomponent },
   { path: 'signup', component: signupcomponent },
   { path: 'user/:id', component: UserShowComponent, pathMatch: 'full' },
+  { path: 'settings', component: UserSettingComponent, pathMatch: 'full', canActivate:[AuthGuard] },
   { path: '**', redirectTo: '' }
 ];
 

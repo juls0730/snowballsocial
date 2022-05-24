@@ -13,6 +13,7 @@ import { AuthInterceptor } from './authentication/auth-interceptor';
 import { ErrorInterceptor } from './error-interceptor';
 import { PostShowComponent } from './posts/post-show/post-show.component';
 import { UserShowComponent } from './users/user-show/user-show.component';
+import { UserSettingComponent } from './users/user-setting/user-setting.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { UserShowComponent } from './users/user-show/user-show.component';
     PostListComponent,
     PostShowComponent,
     UserShowComponent,
+    UserSettingComponent,
     logincomponent,
     signupcomponent
   ],

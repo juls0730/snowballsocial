@@ -112,10 +112,14 @@ export class PostService {
             });
     }
 
-    deletePost(postId: string) {
+    deletePost(postId: any) {
         return this.http.delete('https://' + environment.api_location + '/api/posts/' + postId)
             .subscribe(() => {
-                this.posts.pop();
+                let array = this.posts
+                array = array.filter(function (item) {
+                    return item.id !== postId
+                })
+                this.posts = array
                 this.postUpdated.next({
                     posts: [...this.posts],
                     postCount: this.posts.length

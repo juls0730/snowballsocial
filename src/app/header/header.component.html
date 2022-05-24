@@ -35,7 +35,7 @@
                 </svg>
                 Profile
             </button>
-            <button class="dropdown-buttons">
+            <button (click)="goto('settings')" class="dropdown-buttons">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24"
                     fill="currentColor">
                     <path
@@ -83,7 +83,7 @@
         <li *ngIf="!userIsAuthenticated"><a (click)="slideOutNav()" routerLink="/login">Log In</a></li>
         <li *ngIf="!userIsAuthenticated"><a (click)="slideOutNav()" routerLink="/signup">Sign Up</a></li>
         <li *ngIf="userIsAuthenticated"><a (click)="[slideOutNav(), goto('user/' + this.userId)]">Profile</a></li>
-        <li *ngIf="userIsAuthenticated"><a (click)="[slideOutNav()]">Setings</a></li>
+        <li *ngIf="userIsAuthenticated"><a (click)="[slideOutNav(), goto('settings/')]">Setings</a></li>
         <li *ngIf="userIsAuthenticated"><a (click)="[slideOutNav(), onLogout()]">Logout</a></li>
     </ul>
 </div>

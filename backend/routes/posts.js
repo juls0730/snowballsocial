@@ -4,6 +4,8 @@ const postmodel = require('../models/post');
 const replymodel = require('../models/reply');
 const usermodel = require('../models/user');
 const rateLimit = require('express-rate-limit');
+const Redis = require('ioredis')
+const redisClient = new Redis()
 const multer = require("multer");
 const fs = require('fs');
 const path = require('path');
@@ -210,23 +212,30 @@ router.get('', async (req, res, next) => {
             postmodel.count().then(async (count) => {
                 maxPosts = await count;
             })
-
             for (let i = 0; i < posts.length; i++) {
-                usermodel.findById(posts[i].creator, '-password -__v -followers -following -email', async function (err, user) {
-                    if (err) {
-                        return res.status(500).json({
-                            message: "Fetching posts failed"
-                        });
-                    }
-                    posts[i].creator = user;
-                    if (i === posts.length - 1) {
-                        return res.status(200).json({
-                            message: "Posts fetched successfully",
-                            posts: await posts,
-                            maxPosts: await maxPosts
-                        });
+                await redisClient.get('cache-user-' + posts[i].creator, (err, reply) => {
+                    if (reply == null || err) {
+                        usermodel.findById(posts[i].creator, '-password -__v -email', async function (err, user) {
+                            if (err) {
+                                return res.status(500).json({
+                                    message: "Fetching posts failed"
+                                });
+                            }
+
+                            posts[i].creator = user;
+                            redisClient.set('cache-user-' + posts[i].creator._id, JSON.stringify(user))
+                        })
+                    } else {
+                        posts[i].creator = JSON.parse(reply)
                     }
                 })
+                if (i === posts.length - 1) {
+                    return res.status(200).json({
+                        message: "Posts fetched successfully",
+                        posts: await posts,
+                        maxPosts: await maxPosts
+                    });
+                }
             }
         })
     } catch {
@@ -298,17 +307,28 @@ router.get("/:id", async (req, res, next) => {
                 message: "Post not found"
             });
         } else {
-            usermodel.findById(await result.creator, '-password -__v -followers -following -email', async function (err, user) {
-                if (err) {
-                    return res.status(500).json({
-                        message: "Fetching posts failed"
+            redisClient.get('cache-user-' + result.creator, async (err, reply) => {
+                if (reply == null || err) {
+                    usermodel.findById(await result.creator, '-password -__v -email', async function (err, user) {
+                        if (err) {
+                            return res.status(500).json({
+                                message: "Fetching posts failed"
+                            });
+                        }
+                        redisClient.set('cache-user-' + result.creator, JSON.stringify(user))
+                        result.creator = await user;
+                        res.status(200).json({
+                            message: "Post fetched successfully",
+                            post: await result
+                        });
+                    })
+                } else {
+                    result.creator = JSON.parse(reply)
+                    res.status(200).json({
+                        message: "Post fetched successfully",
+                        post: await result
                     });
                 }
-                result.creator = await user;
-                res.status(200).json({
-                    message: "Post fetched successfully",
-                    post: await result
-                });
             })
         }
     })
@@ -363,20 +383,28 @@ router.get('/:postId/replies', async (req, res, next) => {
             }
 
             for (let i = 0; i < replies.length; i++) {
-                usermodel.findById(replies[i].creator, '-password -__v -followers -following -email', async function (err, user) {
-                    if (err) {
-                        return res.status(500).json({
-                            message: "Fetching replies failed"
-                        });
-                    }
-                    replies[i].creator = await user;
-                    if (i === replies.length - 1) {
-                        return res.status(200).json({
-                            message: "Replies fetched successfully",
-                            replies: await replies,
-                        });
+                await redisClient.get('cache-user-' + replies[i].creator, (err, reply) => {
+                    if (reply == null || err) {
+                        usermodel.findById(replies[i].creator, '-password -__v -email', async function (err, user) {
+                            if (err) {
+                                return res.status(500).json({
+                                    message: "Fetching posts failed"
+                                });
+                            }
+
+                            replies[i].creator = user;
+                            redisClient.set('cache-user-' + replies[i].creator._id, JSON.stringify(user))
+                        })
+                    } else {
+                        replies[i].creator = JSON.parse(reply)
                     }
                 })
+                if (i === replies.length - 1) {
+                    return res.status(200).json({
+                        message: "replies fetched successfully",
+                        replies: await replies
+                    });
+                }
             }
         })
 })
@@ -450,6 +478,7 @@ router.delete('/reply/:id', checkAuth, async (req, res, next) => {
             await postmodel.updateOne({ id: await reply.post }, { $pull: { replies: await reply._id } })
                 .then(async (data) => {
                     // removed reply
+                    
                 })
         }).catch(err => {
             res.status(500).json({

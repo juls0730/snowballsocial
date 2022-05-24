@@ -1,7 +1,7 @@
 <div *ngIf="!Loading">
-    <a class="username" routerLink="/user/{{post.creator}}">
-        by: {{post.creatorname}}
-    </a>
+    <p class="username">by:
+        <a routerLink="/user/{{post.creator}}">{{post.creatorname}}</a>
+    </p>
     <p class="post-text">{{post.content}}</p>
     <img class="post-image" *ngIf="post.imagePath" [src]="post.imagePath" [alt]="post.content.substring(0, 10)"
         loading="lazy">

@@ -25,6 +25,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onLogout() {
+        this.dropdownOpen = false;
         this.userIsAuthenticated = false;
         this.curuser = null;
         this.userId = null;
@@ -34,23 +35,25 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.userIsAuthenticated = this.authService.getIsAuth();
         this.Loading = true;
-        this.userId = this.authService.getUserId();
         if (this.userIsAuthenticated) {
-        this.userService.getUser(this.userId).subscribe(
-            (userData: any) => {
-                this.curuser = userData.user;
-                this.Loading = false;
-            });
+            this.userId = this.authService.getUserId();
+            this.userService.getUser(this.userId).subscribe(
+                (userData: any) => {
+                    this.curuser = userData.user;
+                    this.Loading = false;
+                });
         }
         this.authListenerSubs = this.authService.getAuthStatusListener()
             .subscribe(isAuthenticated => {
                 this.userIsAuthenticated = isAuthenticated;
-                this.userId = this.authService.getUserId();
-                this.userService.getUser(this.userId).subscribe(
-                    (userData: any) => {
-                        this.curuser = userData.user;
-                        this.Loading = false;
-                    });
+                if (this.userIsAuthenticated) {
+                    this.userId = this.authService.getUserId();
+                    this.userService.getUser(this.userId).subscribe(
+                        (userData: any) => {
+                            this.curuser = userData.user;
+                            this.Loading = false;
+                        });
+                }
             });
     }
 
