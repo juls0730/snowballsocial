@@ -10,8 +10,10 @@ const mongoose = require('mongoose');
 var compression = require('compression');
 const helmet = require('helmet')
 const fs = require('fs')
+const cookieParser = require('cookie-parser')
+
 require('dotenv').config({ path: __dirname + '/.env' });
-const imageTTL = 86400000 * 30
+const imageTTL = 31556926000; // 1 year in milliseconds
 imageDirs = ['posts', 'replies', 'users']
 
 mongoose.connect('mongodb://localhost:27017/snowballsocial')
@@ -23,14 +25,22 @@ mongoose.connect('mongodb://localhost:27017/snowballsocial')
     });
 
 app.use(bodyParser.json({ limit: '100mb' }));
+app.use(express.urlencoded({ extended: false, limit: '100mb' }));
 app.use(cors())
 app.use(helmet())
-app.use(compression({ filter: shouldCompress }))
+app.use(cookieParser())
+
+/*
+var csrf = require('csurf')
+var csrfProtection = csrf({ cookie: true });
+app.use(csrfProtection);
+*/
+
 //app.set("trust proxy", 1); // trust linode
 app.disable('x-powered-by')
 
-function shouldCompress(req, res) {
-    if (req.headers['x-no-compression']) {
+const shouldCompress = (req, res) => {
+    if (req.headers['x-no-compression'] === 'true') {
         // don't compress responses with this request header
         return false
     }
@@ -38,6 +48,8 @@ function shouldCompress(req, res) {
     // fallback to standard filter function
     return compression.filter(req, res)
 }
+
+app.use(compression({ filter: shouldCompress, threshold: 0 }))
 
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "https://" + process.env['SERVER_LOCATION']);
@@ -53,6 +65,12 @@ app.use((req, res, next) => {
 app.use("/images", express.static(path.join("backend/images"), {
     maxAge: imageTTL
 }));
+
+/*
+app.get('/api/getcsrftoken', function (req, res) {
+    return res.json({ csrfToken: req.csrfToken() });
+});
+*/
 
 app.use("/api/posts", postroutes);
 app.use("/api/user", userRoutes);

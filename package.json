@@ -10,7 +10,10 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "start:server": "node server.js",
-    "dev:server": "nodemon -e js,json --ignore src/ server.js"
+    "dev:server": "nodemon -e js,json --ignore src/ server.js",
+    "e2e": "concurrently \"ng e2e\" \"npm run start:server\"",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "private": true,
   "dependencies": {
@@ -28,7 +31,9 @@
     "body-parser": "^1.20.0",
     "compression": "^1.7.4",
     "concurrently": "^7.1.0",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "csurf": "^1.11.0",
     "dotenv": "^16.0.0",
     "express": "^4.18.1",
     "express-asyncify": "^1.0.1",
@@ -53,6 +58,7 @@
     "@angular-devkit/build-angular": "~13.3.4",
     "@angular/cli": "~13.3.4",
     "@angular/compiler-cli": "~13.3.0",
+    "@cypress/schematic": "^1.7.0",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
     "jasmine-core": "~4.0.0",
@@ -62,6 +68,7 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
     "nodemon": "^2.0.16",
-    "typescript": "~4.6.2"
+    "typescript": "~4.6.2",
+    "cypress": "latest"
   }
 }

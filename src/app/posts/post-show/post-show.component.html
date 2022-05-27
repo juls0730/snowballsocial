@@ -76,7 +76,7 @@
     </form>
 </div>
 <div multi="true" *ngIf="replies.length > 0">
-    <div class="post-div" *ngFor="let reply of replies">
+    <div class="post-div" id="reply-div" *ngFor="let reply of replies">
         <p class="username" routerLink="/user/{{reply.creator._id}}">by: {{reply.creator.username}}</p>
         <p class="post-text">{{reply.content}}</p>
         <div class="post-actions">

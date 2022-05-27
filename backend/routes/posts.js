@@ -141,42 +141,7 @@ router.post("", checkAuth, multer({ storage: storage }).single("image"), createP
     });
 });
 
-/*
-Old code for getting all posts, does not include username
-router.get('', (req, res, next) => {
-    const PageSize = +req.query.pagesize;
-    const CurentPage = +req.query.currentpage;
-    const postquery = postmodel.find({}, '-__v');
-    if (CurentPage) {
-        postquery.skip(15 * (CurentPage - 1))
-            .limit(15);
-    } else {
-        return res.status(400).json({
-            message: "Currentpage not defined"
-        })
-    }
-    let posts;
-    postquery
-        .then((documents) => {
-            posts = documents;
-            return postmodel.count();
-        }).then(count => {
-            // add username to posts
-            res.status(200).json({
-                message: "Posts fetched successfully",
-                posts: posts,
-                maxPosts: count
-            });
-        }).catch(err => {
-            console.log(err);
-            res.status(500).json({
-                message: "Fetching posts failed"
-            });
-        });
-});
-*/
-
-router.get('', async (req, res, next) => {
+router.get('', checkAuth, async (req, res, next) => {
     try {
         let maxPosts;
         const CurentPage = +req.query.currentpage;
@@ -196,17 +161,17 @@ router.get('', async (req, res, next) => {
                 });
             }
 
+            if (posts.length == 0) {
+                return res.status(200).json({
+                    message: "Posts empty",
+                    posts: []
+                });
+            }
+
             if (!((posts.length / 15) > 0)) {
                 return res.status(406).json({
                     message: "Not enough posts to fill that many pages"
                 })
-            }
-
-            if (posts.length == 0) {
-                return res.status(200).json({
-                    message: "Fetching posts failed",
-                    posts: await posts
-                });
             }
 
             postmodel.count().then(async (count) => {
@@ -440,21 +405,37 @@ router.post('/:postId/reply', multer({ storage: repliesStorage }).single("image"
     }
 
     await reply.save().then(async (result) => {
-        res.status(201).json({
-            message: "Reply added successfully",
-            reply: await result
-        });
-        await postmodel.updateOne({ id: req.params.postId }, { $addToSet: { replies: await result._id } })
-            .then(async (data) => {
-                // added reply
-            })
+        let data = result.toObject();
+        await redisClient.get('cache-user-' + result.creator, async (err, reply) => {
+            if (reply == null || err) {
+                usermodel.findById(result.creator, '-password -__v -email', async function (err, user) {
+                    if (err) {
+                        return res.status(500).json({
+                            message: "Fetching posts failed"
+                        });
+                    }
+
+                    data.creator = user;
+                    redisClient.set('cache-user-' + result.creator._id, JSON.stringify(user))
+                    res.status(201).json({
+                        message: "Reply added successfully",
+                        reply: await data
+                    });
+                })
+            } else {
+                data.creator = JSON.parse(reply)
+                res.status(201).json({
+                    message: "Reply added successfully",
+                    reply: await data
+                });
+            }
+        })
+        // append reply._id to post.replies
+        await postmodel.findOne({ _id: req.params.postId }).then(async (post) => {
+            post.replies.push(result._id);
+            await post.save()
+        })
     })
-        .catch(err => {
-            res.status(500).json({
-                message: "Failed to add reply",
-                error: err
-            });
-        });
 })
 
 router.delete('/reply/:id', checkAuth, async (req, res, next) => {
@@ -475,11 +456,11 @@ router.delete('/reply/:id', checkAuth, async (req, res, next) => {
             res.status(200).json({
                 message: "Reply deleted!"
             });
-            await postmodel.updateOne({ id: await reply.post }, { $pull: { replies: await reply._id } })
-                .then(async (data) => {
-                    // removed reply
-                    
-                })
+            // remove reply._id from post.replies
+            await postmodel.findOne({ _id: reply.post }).then(async (post) => {
+                post.replies = post.replies.filter(reply => reply != req.params.id);
+                await post.save()
+            })
         }).catch(err => {
             res.status(500).json({
                 message: "Deleting reply failed"

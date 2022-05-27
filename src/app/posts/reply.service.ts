@@ -62,7 +62,11 @@ export class ReplyService {
     deleteReply(replyId: string) {
         return this.http.delete('https://' + environment.api_location + '/api/posts/reply/' + replyId)
             .subscribe((replyUpdated) => {
-                this.replies.pop();
+                let array = this.replies
+                array = array.filter(function (item) {
+                    return item.id !== replyId
+                })
+                this.replies = array
                 this.replyUpdated.next({
                     replies: [...this.replies],
                     replyCount: this.replies.length

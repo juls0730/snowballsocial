@@ -1,3 +1,10 @@
+.comment-count, .dropdown-item {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .user-info {
     width: 100%;
     border-bottom: 1px solid var(--md-sys-color-post-outline);
@@ -100,10 +107,6 @@
 
 .dropdown-item {
     padding: 0.5rem;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
     cursor: pointer;
     display: block;
     text-decoration: none;
@@ -141,12 +144,6 @@
 .comment-count {
     color: #00a8ff;
     margin-right: 0.25rem;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 }
 
 .user-actions {

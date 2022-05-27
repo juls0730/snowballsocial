@@ -10,6 +10,6 @@ import { AuthService } from './authentication/auth.service';
 export class AppComponent implements OnInit {
   constructor(private authservice: AuthService) { }
   ngOnInit() {
-    this.authservice.autoAuthUser();  
+    this.authservice.autoAuthUser();
   }
 }  

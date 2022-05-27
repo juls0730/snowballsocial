@@ -20,6 +20,7 @@ export class PostShowComponent implements OnInit {
     constructor(private postsService: PostService, private route: ActivatedRoute, private router: Router, private authService: AuthService, private replyService: ReplyService, private meta: Meta) { }
     post: Post;
     replies: any[] = [];
+    totalReplies: number;
     Loading = false
     userId: string;
     liked = false;
@@ -40,6 +41,12 @@ export class PostShowComponent implements OnInit {
                 this.post = postData;
                 this.Loading = false;
                 this.getReplies(post_id);
+                this.ReplySub = this.replyService.getReplyUpdateListener().
+                subscribe((replyData: { replies: Reply[], replyCount: number }) => {
+                    this.Loading = false;
+                    this.totalReplies = replyData.replyCount;
+                    this.replies = replyData.replies;
+                });
                 this.addMetaTags();
             })
         })
