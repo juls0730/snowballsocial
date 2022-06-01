@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { AuthService } from "src/app/authentication/auth.service";
 import { environment } from "src/environments/environment";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
@@ -20,14 +20,17 @@ export class PostShowComponent implements OnInit {
     constructor(private postsService: PostService, private route: ActivatedRoute, private router: Router, private authService: AuthService, private replyService: ReplyService, private meta: Meta) { }
     post: Post;
     replies: any[] = [];
+    private replyUpdated = new Subject<{ replies: Reply[], replyCount: number }>();
     totalReplies: number;
     Loading = false
     userId: string;
     liked = false;
     form: FormGroup;
-    private ReplySub: Subscription;
+    ReplySub: Subscription;
     private authStatusSub: Subscription;
     userIsAuthenticated: boolean;
+    focusedImage: string;
+    focusedImageAlt: string;
 
     ngOnInit() {
         this.Loading = true;
@@ -42,11 +45,11 @@ export class PostShowComponent implements OnInit {
                 this.Loading = false;
                 this.getReplies(post_id);
                 this.ReplySub = this.replyService.getReplyUpdateListener().
-                subscribe((replyData: { replies: Reply[], replyCount: number }) => {
-                    this.Loading = false;
-                    this.totalReplies = replyData.replyCount;
-                    this.replies = replyData.replies;
-                });
+                    subscribe((replyData: { replies: Reply[], replyCount: number }) => {
+                        this.Loading = false;
+                        this.totalReplies = replyData.replyCount;
+                        this.replies = replyData.replies;
+                    });
                 this.addMetaTags();
             })
         })
@@ -81,7 +84,18 @@ export class PostShowComponent implements OnInit {
     }
 
     onDeleteReply(replyId: string) {
-        this.replyService.deleteReply(replyId);
+        this.replyService.deleteReply(replyId)
+            .subscribe(() => {
+                let array = this.replies
+                array = array.filter(function (item) {
+                    return item.id !== replyId
+                })
+                this.replies = array
+                this.replyUpdated.next({
+                    replies: [...this.replies],
+                    replyCount: this.replies.length
+                });
+            })
     }
 
     openDropdown(dropdownNum: string) {
@@ -147,16 +161,16 @@ export class PostShowComponent implements OnInit {
         this.meta.addTag({ name: 'url', content: 'https://test.juls07.dev/post/' + this.post.id })
         this.meta.addTag({ name: 'og:url', content: 'https://test.juls07.dev/post/' + this.post.id })
         this.meta.addTag({ name: 'og:site_name', content: 'Snowball social' })
-        this.meta.addTag({ name: 'og:description', content: this.post.content.substring(0, 25) + '...' }) 
+        this.meta.addTag({ name: 'og:description', content: this.post.content.substring(0, 25) + '...' })
         this.meta.addTag({ name: 'og:type', content: 'website' })
         this.meta.addTag({ name: 'twitter:card', content: 'summary' })
         this.meta.addTag({ name: 'twitter:title', content: 'Snowball social' })
-        this.meta.addTag({ name: 'twitter:description', content: this.post.content.substring(0, 25) + '...' }) 
+        this.meta.addTag({ name: 'twitter:description', content: this.post.content.substring(0, 25) + '...' })
         this.meta.addTag({ name: 'twitter:url', content: 'https://test.juls07.dev/post/' + this.post.id })
         // this.meta.addTag({ name: keywords, content: this.post.tags })
         if (this.post.imagePath) {
-           this.meta.addTag({ name: 'og:image', content: this.post.imagePath.toString() })
-           this.meta.addTag({ name: 'twitter:image', content: this.post.imagePath.toString() })
+            this.meta.addTag({ name: 'og:image', content: this.post.imagePath.toString() })
+            this.meta.addTag({ name: 'twitter:image', content: this.post.imagePath.toString() })
         }
     }
 }

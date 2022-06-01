@@ -6,7 +6,7 @@
             <li *ngIf="!userIsAuthenticated"><a routerLink="/signup">Sign Up</a></li>
             <li *ngIf="!userIsAuthenticated"><a routerLink="/login">Log In</a></li>
             <li *ngIf="userIsAuthenticated" class="image" (click)="openDropdown()">
-                <img src="https://unsplash.com/photos/gN0yrOzZMDc/download?ixid=MnwxMjA3fDB8MXxhbGx8NHx8fHx8fDJ8fDE2NTI4MjMwMjY&force=true&w=640"
+                <img src="https://images.unsplash.com/photo-1652533884588-d6fab03a68c9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=64&q=60"
                     height="32" class="pfp" width="32">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" class="pfp-svg"
                     stroke="currentColor" stroke-width="2">
@@ -17,7 +17,7 @@
     </ul>
     <div *ngIf="!Loading && userIsAuthenticated && curuser" id="dropdown-content-user" class="dropdown-user">
         <div class="dropdown-user-info">
-            <img src="https://unsplash.com/photos/gN0yrOzZMDc/download?ixid=MnwxMjA3fDB8MXxhbGx8NHx8fHx8fDJ8fDE2NTI4MjMwMjY&force=true&w=640"
+            <img src="https://images.unsplash.com/photo-1652533884588-d6fab03a68c9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=64&q=60"
                 height="64" class="pfp pfp-dropdown" width="64">
             <span class="username">{{curuser.username}}</span>
         </div>

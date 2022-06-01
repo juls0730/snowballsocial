@@ -1,5 +1,6 @@
 const http = require('http');
 const app = require('./backend/app');
+const colors = ['\x1b[32m%s\x1b[0m', '\x1b[33m%s\x1b[0m', '\x1b[31m%s\x1b[0m']
 
 const normalizePort = val => {
     var port = parseInt(val, 10);
@@ -24,11 +25,11 @@ const onError = error => {
     const bind = typeof port === "string" ? "pipe " + port : "port " + port;
     switch (error.code) {
         case "EACCES":
-            console.error(bind + " requires elevated privileges");
+            console.error(colors[2], bind + " requires elevated privileges");
             process.exit(1);
             break;
         case "EADDRINUSE":
-            console.error(bind + " is already in use");
+            console.error(colors[2], bind + " is already in use");
             process.exit(1);
             break;
         default:
@@ -39,7 +40,7 @@ const onError = error => {
 const onListening = () => {
     const addr = server.address();
     const bind = typeof port === "string" ? "pipe " + port : "port " + port;
-    console.log("Listening on " + bind);
+    console.log(colors[0], "Listening on " + bind);
 };
 
 const port = normalizePort(process.env.PORT || "3001");

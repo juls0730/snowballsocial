@@ -1,4 +1,4 @@
-.post-image {
+.post-image img {
     width: fit-content;
     max-width: 100%;
     height: auto;
@@ -37,10 +37,10 @@
 }
 
 .show {
-    display: block;
-    visibility: visible;
-    opacity: 1;
-}
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
 
 .dropdown-item {
     padding: 0.5rem;

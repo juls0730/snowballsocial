@@ -1,9 +1,9 @@
 const asyncify = require("express-asyncify")
 const express = require('express');
 const app = asyncify(express());
+const userrouter = require('./controllers/user');
+const postsrouter = require('./controllers/posts');
 const bodyParser = require('body-parser');
-const postroutes = require('./routes/posts');
-const userRoutes = require("./routes/user");
 const path = require("path");
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -11,6 +11,7 @@ var compression = require('compression');
 const helmet = require('helmet')
 const fs = require('fs')
 const cookieParser = require('cookie-parser')
+const colors = ['\x1b[32m%s\x1b[0m', '\x1b[33m%s\x1b[0m', '\x1b[31m%s\x1b[0m']
 
 require('dotenv').config({ path: __dirname + '/.env' });
 const imageTTL = 31556926000; // 1 year in milliseconds
@@ -18,10 +19,10 @@ imageDirs = ['posts', 'replies', 'users']
 
 mongoose.connect('mongodb://localhost:27017/snowballsocial')
     .then(() => {
-        console.log("Connected to database");
+        console.log(colors[0], "Connected to database");
     })
     .catch(() => {
-        console.log("Connection Failed");
+        console.log(colors[2], "Connection Failed");
     });
 
 app.use(bodyParser.json({ limit: '100mb' }));
@@ -72,8 +73,8 @@ app.get('/api/getcsrftoken', function (req, res) {
 });
 */
 
-app.use("/api/posts", postroutes);
-app.use("/api/user", userRoutes);
+require('./routes/posts')(app);
+require('./routes/user')(app);
 
 // Not found page
 app.use(function (req, res, next) {
@@ -94,7 +95,7 @@ for (let i = 0; i < imageDirs.length; i++) {
     } else {
         fs.mkdir(path.join(__dirname, 'images/' + imageDirs[i]), (err) => {
             if (err) {
-                return console.error(err);
+                return console.error(colors[2], err);
             }
         })
     }

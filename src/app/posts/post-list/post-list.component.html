@@ -5,7 +5,8 @@
         </p>
         <p class="post-text">{{post.content}}</p>
         <div *ngIf="post.imagePath" class="post-image">
-            <img [src]="post.imagePath" [alt]="post.content.substring(0, 10)" loading="lazy">
+            <img (click)="focusImage(post.imagePath.toString())" crossorigin="anonymous" [src]="post.imagePath"
+                [alt]="post.content.substring(0, 10)" loading="lazy">
         </div>
         <div class="post-actions">
             <div class="heart-container">
@@ -70,6 +71,15 @@
             </div>
         </div>
     </div>
+</div>
+<div class="focused-image" id="focused-image">
+    <a (click)="unFocusImage()">
+        <svg xmlns="http://www.w3.org/2000/svg" height="32" class="close-button" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </a>
+    <img id="focused-image-img" crossorigin="anonymous" [src]="focusedImage" [alt]="focusedImageAlt" loading="lazy">
 </div>
 <div *ngIf="Loading" class="spinner">
     <div class="lds-ring">
