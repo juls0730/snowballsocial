@@ -29,7 +29,7 @@ const postStorage = multer.diskStorage({
 
 const postparser = multer({
     storage: postStorage
-});
+}).single('image');
 
 const repliesStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -50,7 +50,7 @@ const repliesStorage = multer.diskStorage({
 
 const replyparser = multer({
     storage: repliesStorage
-});
+}).single('image');
 
 const createPostLimiter = rateLimit({
     windowMs: 5 * 60 * 1000, // 5 minutes
@@ -62,13 +62,13 @@ const createPostLimiter = rateLimit({
 })
 
 module.exports = function (app) {
-    app.post('/api/posts', [createPostLimiter, checkAuth, postparser.single('image')], controller.addPost);
+    app.post('/api/posts', [createPostLimiter, checkAuth, postparser], controller.addPost);
     app.get('/api/posts', [checkAuth], controller.getAllPosts);
     app.delete('/api/posts/:id', [checkAuth], controller.deletePost);
     app.get('/api/posts/:id', controller.getPostById);
     app.put('/api/posts/:id/togglelike', [checkAuth], controller.likePost);
     app.get('/api/posts/:postId/replies', controller.getPostReplies);
-    app.post('/api/posts/:postId/reply', [checkAuth, replyparser.single('image')], controller.addReply);
+    app.post('/api/posts/:postId/reply', [checkAuth, replyparser], controller.addReply);
     app.delete('/api/posts/reply/:id', [checkAuth], controller.deleteReply);
     app.put('/api/posts/reply/:id/togglelike', [checkAuth], controller.likeReply);
 };
