@@ -19,6 +19,7 @@ exports.addPost = async function (req, res) {
         let compressedImg = req.file.filename;
         const url = 'https://' + process.env['API_LOCATION'];
         let fileext = req.file.filename.split('.').pop();
+
         if (fileext == 'png') {
             const filePath = path.join(__dirname, '../images/posts/', req.file.filename);
             const name = req.file.filename.split('.').shift();

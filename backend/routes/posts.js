@@ -13,7 +13,8 @@ const MIME_TYPE_MAP = {
 const postStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         const isValid = MIME_TYPE_MAP[file.mimetype];
-        let error = new Error("Invalid Mime Type");
+        let error = new Error("Invalid mime type");
+
         if (isValid) {
             error = null;
         }
@@ -34,10 +35,12 @@ const postparser = multer({
 const repliesStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         const isValid = MIME_TYPE_MAP[file.mimetype];
-        let error = new Error("Invalid Mime Type");
+        let error = new Error("Invalid mime type");
+
         if (isValid) {
             error = null;
         }
+
         cb(error, "backend/images/replies");
     },
 

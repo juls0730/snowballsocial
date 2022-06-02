@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from './authentication/auth.service';
 
 @Component({
@@ -8,7 +9,7 @@ import { AuthService } from './authentication/auth.service';
 })
 
 export class AppComponent implements OnInit {
-  constructor(private authservice: AuthService) { }
+  constructor(private authservice: AuthService, public router: Router) { }
   ngOnInit() {
     this.authservice.autoAuthUser();
   }

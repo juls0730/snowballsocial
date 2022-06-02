@@ -22,7 +22,7 @@
             </svg>
         </button>
         <span class="image-name" id="image-name"></span>
-        <div *ngIf="!form.get('image').valid && form.get('image').value !== null">
+        <div *ngIf="form.get('image').value !== null && form.get('image').value.type !== 'image/jpeg' && form.get('image').value.type !== 'image/jpg' && form.get('image').value.type !== 'image/png'">
             <p class="error-text">File is not an image</p>
         </div>
         <input type="file" id="image-picker" #filepicker accept="image/png, image/jpeg" (change)="PickedImage($event)">

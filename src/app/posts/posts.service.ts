@@ -83,13 +83,12 @@ export class PostService {
         return this.postUpdated.asObservable();
     }
 
-    addPost(content: string, image: File, creator: string) {
+    addPost(content: string, image: File) {
         const postData = new FormData();
         postData.append('content', content);
         if (image) {
             postData.append('image', image, content.substring(0, 10));
         }
-        postData.append('creator', creator);
         this.http.post<{ post: any }>('https://' + environment.api_location + '/api/posts', postData)
             .subscribe((responseData) => {
                 const post: Post = {

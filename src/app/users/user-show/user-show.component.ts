@@ -1,6 +1,7 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, HostListener, OnInit } from "@angular/core";
 import { ActivatedRoute, ParamMap } from "@angular/router";
 import { Router } from "@angular/router";
+import { Subject } from "rxjs";
 import { AuthService } from "src/app/authentication/auth.service";
 import { PostService } from "src/app/posts/posts.service";
 import { environment } from "src/environments/environment";
@@ -18,13 +19,15 @@ export class UserShowComponent implements OnInit {
     constructor(private userService: UserService, private route: ActivatedRoute, private authService: AuthService, private router: Router, private postsService: PostService) { }
     user: User;
     posts: Post[] = [];
-    Loading = false
-    PostsLoading = false
-    following = false;
-    isCurrentUser = false;
-    currentpage = 0;
-    userIsAuthenticated = false;
-    userId;
+    Loading: boolean = false
+    PostsLoading: boolean = false
+    following: boolean = false;
+    isCurrentUser: boolean = false;
+    userIsAuthenticated: boolean = false;
+    userId: string;
+    currentPage: number = 1;
+    totalposts: number;
+    private postUpdated = new Subject<{ posts: Post[], maxPosts: number }>();
 
     ngOnInit() {
         this.Loading = true;
@@ -45,11 +48,12 @@ export class UserShowComponent implements OnInit {
                 }
             });
 
-            this.userService.getUserPosts(user_id)
-            .subscribe(posts => {
-                this.posts = this.posts.concat(posts.posts);
-                this.PostsLoading = false;
-            })
+            this.userService.getUserPosts(user_id, this.currentPage)
+                .subscribe(posts => {
+                    this.posts = this.posts.concat(posts.posts);
+                    this.PostsLoading = false;
+                    this.totalposts = posts.maxPosts;
+                })
         })
         window.onclick = function (event) {
             if (!event.target.matches('#dropbtn')) {
@@ -115,6 +119,28 @@ export class UserShowComponent implements OnInit {
             var openDropdown = dropdowns[i];
             if (openDropdown.classList.contains('show') && openDropdown.id != "dropdown" + dropdownNum) {
                 openDropdown.classList.remove('show');
+            }
+        }
+    }
+
+    @HostListener('window:scroll', ['$event']) onScroll(event: any) {
+        const element = document.getElementById('posts');
+
+        const domRect = element.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - domRect.bottom;
+
+        if (spaceBelow >= -1250) {
+            if ((this.totalposts / 15) > this.currentPage) {
+                this.currentPage += 1;
+                this.userService.addPosts(this.user._id, this.currentPage)
+                    .subscribe((transformedPostsData) => {
+                        console.log(transformedPostsData);
+                        this.posts = this.posts.concat(transformedPostsData.posts);
+                        this.postUpdated.next({
+                            posts: [...this.posts],
+                            maxPosts: this.totalposts
+                        });
+                    });
             }
         }
     }

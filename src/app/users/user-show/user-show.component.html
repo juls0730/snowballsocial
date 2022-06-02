@@ -32,7 +32,7 @@
         <div></div>
     </div>
 </div>
-<div multi="true" id="posts" *ngIf="posts.length">
+<div multi="true" (scroll)="onScroll($event)" id="posts" *ngIf="posts.length">
     <div class="post-div" *ngFor="let post of posts" (click)="gotoPost(post.id)">
         <p class="username">by:
             <a routerLink="/user/{{post.creator}}">{{post.creatorname}}</a>

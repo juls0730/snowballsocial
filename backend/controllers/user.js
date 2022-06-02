@@ -117,13 +117,40 @@ exports.findOne = async function (req, res) {
 }
 
 exports.getUserPosts = async function (req, res) {
-    await post.find({ creator: req.params.id }).lean().exec(async (err, posts) => {
+    let maxPosts;
+    const CurentPage = +req.query.currentpage;
+    const postquery = post.find({}, '-__v');
+    if (CurentPage) {
+        postquery.skip(15 * (CurentPage - 1))
+            .limit(15);
+    } else {
+        return res.status(400).json({
+            message: "Currentpage not defined"
+        })
+    }
+    await postquery.find({ creator: req.params.id }).lean().exec(async (err, posts) => {
         if (err) {
             return res.status(500).json({
                 message: "Internal server error"
             })
         }
 
+        if (posts.length == 0) {
+            return res.status(200).json({
+                message: "Posts empty",
+                posts: []
+            });
+        }
+
+        if (!((posts.length / 15) > 0)) {
+            return res.status(406).json({
+                message: "Not enough posts to fill that many pages"
+            })
+        }
+
+        post.count().then(async (count) => {
+            maxPosts = await count;
+        })
         for (let i = 0; i < posts.length; i++) {
             await redisClient.get('cache-user-' + posts[i].creator, (err, reply) => {
                 if (reply == null || err) {
@@ -146,6 +173,7 @@ exports.getUserPosts = async function (req, res) {
                 return res.status(200).json({
                     message: "Posts fetched successfully",
                     posts: await posts,
+                    maxPosts: await maxPosts
                 });
             }
         }

@@ -19,10 +19,11 @@ export class UserService {
         }>(`https://${environment.api_location}/api/user/${id}`);
     }
 
-    getUserPosts(id: string) {
+    getUserPosts(id: string, currentpage: number) {
+        const queryParams = `?currentpage=${currentpage}`;
         return this.http.get<{
-            posts: any[]
-        }>(`https://${environment.api_location}/api/user/${id}/posts`)
+            posts: any[], maxPosts: number
+        }>(`https://${environment.api_location}/api/user/${id}/posts` + queryParams)
         .pipe(
             map(postData => {
                 return {
@@ -37,7 +38,31 @@ export class UserService {
                             likes: post.likes
                         };
                     }),
-                    //maxPosts: postData.maxPosts
+                    maxPosts: postData.maxPosts
+                };
+            })
+        );
+    }
+    
+    addPosts(id: string, currentPage: number) {
+        const queryParams = `?currentpage=${currentPage}`;
+        return this.http.get<{
+            posts: any[], maxPosts: number
+        }>(`https://${environment.api_location}/api/user/${id}/posts` + queryParams)
+        .pipe(
+            map(postData => {
+                return {
+                    posts: postData.posts.map(post => {
+                        return {
+                            content: post.content,
+                            id: post._id,
+                            imagePath: post.imagePath,
+                            creator: post.creator._id,
+                            creatorname: post.creator.username,
+                            replies: post.replies,
+                            likes: post.likes
+                        };
+                    }),
                 };
             })
         );

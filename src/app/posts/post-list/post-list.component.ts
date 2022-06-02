@@ -15,8 +15,8 @@ import { Router } from "@angular/router";
 })
 
 export class PostListComponent implements OnInit, OnDestroy {
-    totalposts = 0;
-    currentpage = 1;
+    totalposts: number = 0;
+    currentpage: number = 1;
     userId: string;
     private authStatusSub: Subscription;
     @Input() posts: Post[] = [];
@@ -25,9 +25,9 @@ export class PostListComponent implements OnInit, OnDestroy {
     focusedImage: string;
     focusedImageAlt: string;
     averageimagecolor: any;
+    Loading: boolean = false
 
     constructor(public postsService: PostService, private authService: AuthService, private router: Router) { }
-    Loading = false
 
     ngOnInit() {
         this.Loading = true;
@@ -141,12 +141,6 @@ export class PostListComponent implements OnInit, OnDestroy {
 
         canvas.remove();
         return rgb;
-    }
-
-    onChangedPage(pageData: PageEvent) {
-        this.Loading = true;
-        this.currentpage = pageData.pageIndex + 1;
-        this.postsService.addPosts(this.currentpage);
     }
 
     onDelete(postId: string) {

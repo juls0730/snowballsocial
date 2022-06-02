@@ -21,7 +21,7 @@ export class PostCreateComponent implements OnInit {
             image: new FormControl(null, {
                 validators: [],
                 asyncValidators: [mimetype]
-            })    // we make it empty so that it will not be required
+            })
         });
     }
 
@@ -46,7 +46,14 @@ export class PostCreateComponent implements OnInit {
             return;
         }
 
-        this.postsService.addPost(this.form.value.content, this.form.value.image, this.authService.getUserId());
+        if (this.form.value.image !== null) {
+            if (this.form.value.image.type !== "image/jpeg" && this.form.value.image.type !== "image/jpg" && this.form.value.image.type !== "image/png") {
+                return;
+            }
+        }
+        console.log(this.form.value.image)
+
+        this.postsService.addPost(this.form.value.content, this.form.value.image);
         this.form.reset();
         this.form.get('content').setErrors(null);
         this.form.get('image').setErrors(null);

@@ -266,7 +266,7 @@ input:not([type="checkbox"], [type="radio"], [type="submit"], [type="date"]) {
   border: 1px solid var(--md-sys-color-input);
   min-width: 190px;
   max-width: calc(280px + 32px);
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
   max-height: 48px;
   font-weight: 400;

@@ -22,9 +22,9 @@ export class PostShowComponent implements OnInit {
     replies: any[] = [];
     private replyUpdated = new Subject<{ replies: Reply[], replyCount: number }>();
     totalReplies: number;
-    Loading = false
+    Loading: boolean = false
     userId: string;
-    liked = false;
+    liked: boolean = false;
     form: FormGroup;
     ReplySub: Subscription;
     private authStatusSub: Subscription;
