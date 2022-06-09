@@ -1,9 +1,7 @@
 import { Component, Input, OnInit, OnDestroy, HostListener } from "@angular/core";
-import { HttpClient } from '@angular/common/http';
 import { Post } from '../post.model';
 import { PostService } from '../posts.service';
 import { Subscription } from 'rxjs';
-import { PageEvent } from '@angular/material/paginator';
 import { AuthService } from "src/app/authentication/auth.service";
 import { environment } from '../../../environments/environment';
 import { Router } from "@angular/router";

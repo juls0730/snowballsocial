@@ -14,6 +14,16 @@ import { ErrorInterceptor } from './error-interceptor';
 import { PostShowComponent } from './posts/post-show/post-show.component';
 import { UserShowComponent } from './users/user-show/user-show.component';
 import { UserSettingComponent } from './users/user-setting/user-setting.component';
+import { ConversationsListComponent } from './conversations/conversations-list/conversations-list.component';
+import { ConversationShowComponent } from './conversations/conversation-show/conversation-show.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+
+const config: SocketIoConfig = {
+	url: environment.socket_url, // socket server url;
+	options: {}
+}
 
 @NgModule({
   declarations: [
@@ -24,6 +34,8 @@ import { UserSettingComponent } from './users/user-setting/user-setting.componen
     PostShowComponent,
     UserShowComponent,
     UserSettingComponent,
+    ConversationsListComponent,
+    ConversationShowComponent,
     logincomponent,
     signupcomponent
   ],
@@ -33,7 +45,12 @@ import { UserSettingComponent } from './users/user-setting/user-setting.componen
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    SocketIoModule.forRoot(config),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ],
   providers: [
     {

@@ -3,7 +3,7 @@
         <textarea rows="6" name="content" id="content" formControlName="content" maxlength="500"
             class="floating-label-field" placeholder="Content" required></textarea>
         <label for="post" class="floating-label">Content</label>
-        <div *ngIf="form.get('content').invalid">
+        <div *ngIf="form.get('content').invalid && (form.get('content').dirty || form.get('content').touched)">
             <p class="error-text" *ngIf="form.get('content').errors['required']">Body is required</p>
             <p class="error-text" *ngIf="form.get('content').errors['maxlength']">Body is too long</p>
         </div>

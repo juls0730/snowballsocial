@@ -1,6 +1,6 @@
 {
   "name": "snowball-social",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --live-reload=false --port 8080",
@@ -9,8 +9,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "start:server": "node server.js",
-    "dev:server": "nodemon -e js,json --ignore src/ server.js",
+    "start:server": "node backend/app.js",
+    "dev:server": "nodemon -e js,json --ignore src/ backend/app.js",
     "e2e": "concurrently \"ng e2e\" \"npm run start:server\"",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
@@ -23,10 +23,11 @@
     "@angular/compiler": "~13.3.0",
     "@angular/core": "~13.3.0",
     "@angular/forms": "~13.3.0",
-    "@angular/material": "^13.3.6",
     "@angular/platform-browser": "~13.3.0",
     "@angular/platform-browser-dynamic": "~13.3.0",
     "@angular/router": "~13.3.0",
+    "@angular/service-worker": "~13.3.0",
+    "@schematics/angular": "^13.3.7",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "compression": "^1.7.4",
@@ -35,6 +36,7 @@
     "cors": "^2.8.5",
     "csurf": "^1.11.0",
     "dotenv": "^16.0.0",
+    "eiows": "^4.1.2",
     "express": "^4.18.1",
     "express-asyncify": "^1.0.1",
     "express-rate-limit": "^6.4.0",
@@ -42,14 +44,17 @@
     "helmet": "^5.0.2",
     "ioredis": "^5.0.5",
     "jimp": "^0.16.1",
+    "jquery": "^3.6.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.2",
     "mongoose-unique-validator": "^3.0.0",
     "multer": "^1.4.4",
     "ngx-cookie-service": "^13.2.0",
+    "ngx-socket-io": "^4.2.0",
     "redis": "^4.1.0",
     "rxjs": "~7.5.0",
     "save": "^2.5.0",
+    "socket.io": "^4.5.1",
     "sweetalert2": "^11.4.10",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
@@ -61,6 +66,7 @@
     "@cypress/schematic": "^1.7.0",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
+    "cypress": "latest",
     "jasmine-core": "~4.0.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",
@@ -68,7 +74,6 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
     "nodemon": "^2.0.16",
-    "typescript": "~4.6.2",
-    "cypress": "latest"
+    "typescript": "~4.6.2"
   }
 }

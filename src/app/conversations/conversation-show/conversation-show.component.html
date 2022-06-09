@@ -1,0 +1,53 @@
+<div (scroll)="onScroll($event)" class="conversation" id="message-list">
+    <p *ngIf="messages.length <= 0 && !Loading" class="info-text"> No messages yet! </p>
+
+    <div *ngIf="Loading" class="spinner">
+        <div class="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div multi="true" id="messages" *ngIf="messages.length">
+        <div class="message" *ngFor="let message of messages">
+            <b>From: <a href="{{message.creator._id}}">{{message.creator.username}}</a></b>
+            <p>{{message.content}}</p>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="typingMessage != ''" class="typing-container">
+    <p class="typing-text">{{typingMessage}} typing</p>
+    <div class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
+<div *ngIf="!this.conversationDataLoading" class="create-message">
+    <form [formGroup]="form" #messageForm="ngForm" (submit)="createMessage()">
+        <div class="floating-label-wrap">
+            <textarea rows="1" autocomplete="off" name="content" id="message-input" formControlName="content"
+                maxlength="2000" class="floating-label-field message-input"
+                placeholder='Message {{ this.conversation.name }}' required></textarea>
+            <div *ngIf="form.get('content').invalid && (form.get('content').dirty || form.get('content').touched)">
+                <p class="error-text" *ngIf="form.get('content').errors['required']">Body is required</p>
+                <p class="error-text" *ngIf="form.get('content').errors['maxlength']">Body is too long</p>
+            </div>
+            <button class="icon-button">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="24" height="24"
+                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <desc>Download more icon variants from https://tabler-icons.io/i/send</desc>
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                    <path d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </form>
+</div>

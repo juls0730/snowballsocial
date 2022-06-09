@@ -1,0 +1,156 @@
+.conversation {
+    white-space: pre-wrap;
+    /* css-3 */
+    white-space: -moz-pre-wrap;
+    /* Mozilla, since 1999 */
+    white-space: -pre-wrap;
+    /* Opera 4-6 */
+    white-space: -o-pre-wrap;
+    /* Opera 7 */
+    word-wrap: break-word;
+    /* Internet Explorer 5.5+ */
+    overflow-y: scroll;
+    height: calc(100vh - 65.5px - 32px - 56px);
+}
+
+.create-message {
+    display: flex;
+    position: absolute;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    width: calc(100% - 16px);
+    background-color: var(--md-sys-color-background);
+    bottom: 0px;
+}
+
+.message {
+    padding: 4px 8px;
+    margin: 4px 0;
+    background-color: var(--md-sys-color-background);
+}
+
+.message:hover {
+    background-color: var(--md-sys-color-background-darkened);
+}
+
+.message-input::placeholder {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.message p {
+    margin: 0;
+}
+
+form {
+    width: 100%
+}
+
+.floating-label-wrap {
+    margin-top: 0;
+}
+
+textarea {
+    width: calc(100% - 72px - 2.5rem);
+    margin-right: 0.5rem;
+    max-width: calc(100% - 72px - 2.5rem);
+    min-width: 10%;
+    max-height: 300px;
+}
+
+textarea::placeholder {
+    color: var(--md-sys-color-on-background) !important;
+}
+
+button {
+    position: absolute;
+    top: 2px;
+    right: 1.5rem;
+}
+
+.typing-container {
+    display: flex;
+    background-color: var(--md-sys-color-surface);
+}
+
+.typing-text {
+    color: var(--md-sys-color-on-surface);
+    font-size: var(--md-sys-typescale-caption-size);
+    line-height: var(--md-sys-typescale-caption-line-height);
+    letter-spacing: var(--md-sys-typescale-caption-tracking);
+    color: var(--md-sys-color-on-background);
+    margin: 0;
+    width: fit-content;
+    line-height: 24px;
+}
+
+.lds-ellipsis {
+    display: inline-block;
+    position: relative;
+    width: 31px;
+    height: 24px;
+}
+
+.lds-ellipsis div {
+    position: absolute;
+    top: 9.9px;
+    width: 5.2px;
+    height: 5.2px;
+    border-radius: 50%;
+    background: #fff;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.lds-ellipsis div:nth-child(1) {
+    left: 3.2px;
+    animation: lds-ellipsis1 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(2) {
+    left: 3.2px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(3) {
+    left: 12.8px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(4) {
+    left: 22.4px;
+    animation: lds-ellipsis3 0.6s infinite;
+}
+
+@keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}
+
+@keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(9.6px, 0);
+    }
+}

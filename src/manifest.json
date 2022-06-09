@@ -1,0 +1,10 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "name": "SnowballSocial",
+    "shortName": "SnowballSocial",
+    "icons": [],
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "theme_color": "#212121"
+}

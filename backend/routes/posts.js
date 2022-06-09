@@ -41,7 +41,7 @@ const repliesStorage = multer.diskStorage({
             error = null;
         }
 
-        cb(error, "backend/images/replies");
+        cb(new Error("you cannot upload a file via replies yet"), "backend/images/replies");
     },
 
     filename: (req, file, cb) => {

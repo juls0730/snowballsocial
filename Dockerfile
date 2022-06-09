@@ -17,4 +17,4 @@ COPY . .
 
 EXPOSE 2087
 
-CMD [ "node", "server.js" ]
+CMD [ "node", "backend/app.js" ]

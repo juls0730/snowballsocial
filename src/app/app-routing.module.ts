@@ -8,6 +8,8 @@ import { AuthGuard } from './authentication/auth.guard';
 import { PostShowComponent } from './posts/post-show/post-show.component';
 import { UserShowComponent } from './users/user-show/user-show.component';
 import { UserSettingComponent } from './users/user-setting/user-setting.component';
+import { ConversationsListComponent } from './conversations/conversations-list/conversations-list.component';
+import { ConversationShowComponent } from './conversations/conversation-show/conversation-show.component';
 
 const routes: Routes = [
   { path: '', component: PostCreateComponent, canActivate:[AuthGuard] },
@@ -17,6 +19,8 @@ const routes: Routes = [
   { path: 'signup', component: signupcomponent },
   { path: 'user/:id', component: UserShowComponent, pathMatch: 'full' },
   { path: 'settings', component: UserSettingComponent, pathMatch: 'full', canActivate:[AuthGuard] },
+  { path: 'messages', component: ConversationsListComponent, pathMatch: 'full', canActivate:[AuthGuard] },
+  { path: 'conversations/:id', component: ConversationShowComponent, pathMatch: 'full', canActivate:[AuthGuard] },
   { path: '**', redirectTo: '' }
 ];
 

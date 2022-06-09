@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   server_location: 'localhost',
-  api_location: 'localhost:2087'
+  api_location: 'localhost:2087',
+  socket_url: 'localhost:2053'
 };
 
 /*

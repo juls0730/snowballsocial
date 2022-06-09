@@ -92,6 +92,12 @@ exports.signup = async function (req, res) {
 }
 
 exports.findOne = async function (req, res) {
+    const ObjectId = require('mongoose').Types.ObjectId;
+    if (!req.params.id || !ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({
+            message: "Invalid request"
+        });
+    }
     redisClient.get('cache-user-' + req.params.id, async (err, reply) => {
         if (reply == null || err) {
             await user.findById({ _id: req.params.id }, '-password -__v -email')
@@ -117,6 +123,12 @@ exports.findOne = async function (req, res) {
 }
 
 exports.getUserPosts = async function (req, res) {
+    const ObjectId = require('mongoose').Types.ObjectId;
+    if (!req.params.id || !ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({
+            message: "Invalid request"
+        });
+    }
     let maxPosts;
     const CurentPage = +req.query.currentpage;
     const postquery = post.find({}, '-__v');

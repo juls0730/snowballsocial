@@ -1,0 +1,17 @@
+<div multi="true" id="conversations" *ngIf="conversations.length">
+    <div style="width: fit-content;" class="post-div" *ngFor="let conversation of conversations">
+        <a style="width: fit-content;" routerLink="/conversations/{{conversation.id}}">
+            <p style="width: fit-content;">{{conversation.name}}</p>
+        </a>
+    </div>
+</div>
+
+<div *ngIf="Loading" class="spinner">
+    <div class="lds-ring">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
+<p *ngIf="conversations.length <= 0 && !Loading" class="info-text"> No conversations yet! </p>

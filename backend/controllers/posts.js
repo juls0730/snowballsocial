@@ -2,7 +2,6 @@ const postmodel = require('../models/post');
 const replymodel = require('../models/reply');
 const usermodel = require('../models/user');
 const Redis = require('ioredis')
-const multer = require('multer');
 const redisClient = new Redis()
 const fs = require('fs');
 const path = require('path');

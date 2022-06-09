@@ -3,7 +3,7 @@ import { ActivatedRoute, ParamMap } from "@angular/router";
 import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { AuthService } from "src/app/authentication/auth.service";
-import { PostService } from "src/app/posts/posts.service";
+import { PostService } from "../../posts/posts.service";
 import { environment } from "src/environments/environment";
 import { Post } from "../../posts/post.model";
 import { User } from "../user.model";
