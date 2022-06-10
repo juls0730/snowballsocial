@@ -383,11 +383,20 @@ input:not([type="checkbox"], [type="radio"], [type="submit"], [type="date"])::pl
   color: #00a8ff;
 }
 
+.icon-button:focus {
+  background-color: #00aaff1c;
+  color: #00a8ff;
+}
+
 .heart {
   color: #ff004c;
 }
 
 .heartbtn:hover {
+  background-color: #ff004c1c;
+}
+
+.heartbtn:focus {
   background-color: #ff004c1c;
 }
 
@@ -431,6 +440,7 @@ input:not([type="checkbox"], [type="radio"], [type="submit"], [type="date"])::pl
   max-height: calc(100% - 1.5em);
   color: var(--md-sys-color-on-background);
   font: inherit;
+  pointer-events: none;
   position: absolute;
   padding: 0px 8px;
   top: calc(0.75em - 2px);

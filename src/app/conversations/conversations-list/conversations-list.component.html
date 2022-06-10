@@ -1,3 +1,19 @@
+<div id="create-conversation">
+    <form (submit)="onCreateConversation()" id="submit-group" [formGroup]="form" #conversationForm="ngForm">
+        <div class="floating-label-wrap">
+            <textarea rows="6" name="participants" id="participants" formControlName="participants"
+                class="floating-label-field" placeholder="participants" required></textarea>
+            <label for="post" class="floating-label">Add friends</label>
+            <div
+                *ngIf="form.get('participants').invalid && (form.get('participants').dirty || form.get('participants').touched)">
+                <p class="error-text" *ngIf="form.get('participants').errors['required']">friends are required</p>
+            </div>
+        </div>
+        <button>Create conversation</button>
+        <hr>
+    </form>
+</div>
+
 <div multi="true" id="conversations" *ngIf="conversations.length">
     <div style="width: fit-content;" class="post-div" *ngFor="let conversation of conversations">
         <a style="width: fit-content;" routerLink="/conversations/{{conversation.id}}">

@@ -18,10 +18,9 @@ exports.addPost = async function (req, res) {
         let compressedImg = req.file.filename;
         const url = 'https://' + process.env['API_LOCATION'];
         let fileext = req.file.filename.split('.').pop();
-
+        const filePath = path.join(__dirname, '../images/posts/', req.file.filename)
+        const name = req.file.filename.split('.').shift();
         if (fileext == 'png') {
-            const filePath = path.join(__dirname, '../images/posts/', req.file.filename);
-            const name = req.file.filename.split('.').shift();
             Jimp.read(filePath, function (err, image) {
                 if (err) {
                     throw err;
@@ -37,8 +36,6 @@ exports.addPost = async function (req, res) {
             compressedImg = name + '.jpg';
         }
         if (fileext == 'jpg') {
-            const filePath = path.join(__dirname, '../images/posts/', req.file.filename);
-            const name = req.file.filename.split('.').shift();
             Jimp.read(filePath, function (err, image) {
                 if (err) {
                     throw err;

@@ -26,6 +26,11 @@
     color: #00a8ff;
 }
 
+.icon-button:focus {
+    background-color: #00aaff1c;
+    color: #00a8ff;
+}
+
 input[type='file'] {
     display: none;
 }

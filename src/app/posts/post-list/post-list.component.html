@@ -1,11 +1,11 @@
 <div multi="true" (scroll)="onScroll($event)" id="posts" *ngIf="posts.length">
-    <div class="post-div" *ngFor="let post of posts" (click)="gotoPost(post.id)">
+    <div tabindex="0" class="post-div" *ngFor="let post of posts" (keydown.ENTER)="gotoPost(post.id)" (click)="gotoPost(post.id)">
         <p class="username">by:
             <a routerLink="/user/{{post.creator}}">{{post.creatorname}}</a>
         </p>
         <p class="post-text">{{post.content}}</p>
         <div *ngIf="post.imagePath" class="post-image">
-            <img (click)="focusImage(post.imagePath.toString())" crossorigin="anonymous" [src]="post.imagePath"
+            <img tabindex="0" (keydown.ENTER)="focusImage(post.imagePath.toString())" (click)="focusImage(post.imagePath.toString())" crossorigin="anonymous" [src]="post.imagePath"
                 [alt]="post.content.substring(0, 10)" loading="lazy">
         </div>
         <div class="post-actions">
@@ -73,7 +73,7 @@
     </div>
 </div>
 <div class="focused-image" id="focused-image">
-    <a (click)="unFocusImage()">
+    <a tabindex="1" (keydown.ENTER)="unFocusImage()" (click)="unFocusImage()">
         <svg xmlns="http://www.w3.org/2000/svg" height="32" class="close-button" fill="none" viewBox="0 0 24 24"
             stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />

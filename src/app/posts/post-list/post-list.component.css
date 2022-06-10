@@ -39,8 +39,9 @@
   cursor: pointer;
 }
 
-.post-div:hover {
+.post-div:hover, .post-div:focus {
   border: 1px solid var(--md-sys-color-post-outline-hover);
+  outline: none;
 }
 
 .post-div a {
@@ -185,4 +186,19 @@
   right: 1.25rem;
   cursor: pointer;
   z-index: 25;
+}
+
+.close-button {
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.close-button:hover {
+  background: #0000007e;
+}
+
+.close-button:focus {
+  outline: none;
+  background: #0000007e;
 }

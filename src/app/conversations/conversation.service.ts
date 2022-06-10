@@ -143,6 +143,29 @@ export class ConversationService {
         }
     }
 
+    addConversation(participants: string[]) {
+        const conversationData = {
+            partner: participants
+        };
+        this.http.post<{ message: string, conversation: any }>('https://' + environment.api_location + '/api/conversation', conversationData)
+            .subscribe(
+                (responseData) => {
+                    this.conversations.push({
+                        id: responseData.conversation._id,
+                        name: responseData.conversation.name,
+                        participants: responseData.conversation.participants.map(participant => {
+                            return {
+                                id: participant._id,
+                                username: participant.username,
+                            }
+                        })
+                    });
+                    this.conversationUpdated.next({
+                        conversations: [...this.conversations],
+                    });
+                })
+    }
+
     addMessage(content: string, conversationId: string) {
         const postData = new FormData();
         postData.append('content', content);

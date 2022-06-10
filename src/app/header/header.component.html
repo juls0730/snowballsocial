@@ -7,7 +7,7 @@
         <a *ngIf="!userIsAuthenticated" routerLink="/signup">Sign Up</a>
         <a *ngIf="!userIsAuthenticated" routerLink="/login">Log In</a>
         <div *ngIf="userIsAuthenticated" (click)="goto('messages/')">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon-button" width="24" height="24" viewBox="0 0 24 24"
+            <svg tabindex="0" xmlns="http://www.w3.org/2000/svg" class="icon-button" width="24" height="24" viewBox="0 0 24 24"
                 stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <desc>Download more icon variants from https://tabler-icons.io/i/message-dots</desc>
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -17,7 +17,7 @@
                 <line x1="16" y1="11" x2="16" y2="11.01"></line>
             </svg>
         </div>
-        <div *ngIf="userIsAuthenticated" class="image" (click)="openDropdown()">
+        <div *ngIf="userIsAuthenticated" tabindex="0" class="image" (click)="openDropdown()">
             <img src="https://images.unsplash.com/photo-1652533884588-d6fab03a68c9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=64&q=60"
                 height="32" crossorigin="anonymous" class="pfp" width="32">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" class="pfp-svg"

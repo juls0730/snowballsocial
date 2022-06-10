@@ -104,21 +104,20 @@ exports.startConversation = async (req, res) => {
             });
         }).clone()
     } else {
-        await usermodel.find({ username: partner }, async (err, partner) => {
+        await usermodel.find({ username: partner }, async (err, partnerinfo) => {
             if (err) {
                 return res.status(500).json({
                     message: "Error while finding partner"
                 })
             }
 
-            if (!partner) {
-                return res.status(404).json({
-                    message: "Partner not found"
-                })
-            }
-
-            partnerData = partner[0];
+            partnerData = partnerinfo[0];
         }).clone(); // super hacky but works
+        if (!partnerData) {
+            return res.status(404).json({
+                message: "User not found"
+            })
+        }
 
         if (userId == partnerData._id) {
             return res.status(400).json({
