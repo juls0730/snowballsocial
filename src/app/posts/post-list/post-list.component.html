@@ -1,5 +1,5 @@
 <div multi="true" (scroll)="onScroll($event)" id="posts" *ngIf="posts.length">
-    <div tabindex="0" class="post-div" *ngFor="let post of posts" (keydown.ENTER)="gotoPost(post.id)" (click)="gotoPost(post.id)">
+    <div tabindex="0" class="post-div" *ngFor="let post of posts" (click)="gotoPost(post.id)">
         <p class="username">by:
             <a routerLink="/user/{{post.creator}}">{{post.creatorname}}</a>
         </p>
@@ -55,7 +55,7 @@
                 </svg>
             </button>
             <div :id="dropdown{{post.id}}-1" class="dropdown-content">
-                <a class="dropdown-item" (click)="copyLink(post.id)">Copy Link</a>
+                <a class="dropdown-item" tabindex="0" (click)="copyLink(post.id)">Copy Link</a>
             </div>
             <button *ngIf="userIsAuthenticated && userId === post.creator" (click)="openDropdown(post.id + '-2')"
                 id="dropbtn" class="icon-button">
@@ -67,7 +67,7 @@
             </button>
             <div *ngIf="userIsAuthenticated && userId === post.creator" :id="dropdown{{post.id}}-2"
                 class="dropdown-content">
-                <a class="dropdown-item" (click)="onDelete(post.id)">Delete Post</a>
+                <a class="dropdown-item" tabindex="0" (click)="onDelete(post.id)">Delete Post</a>
             </div>
         </div>
     </div>

@@ -26,6 +26,8 @@ export class UserShowComponent implements OnInit {
     userIsAuthenticated: boolean = false;
     userId: string;
     currentPage: number = 1;
+    focusedImage: string;
+    focusedImageAlt: string;
     totalposts: number;
     private postUpdated = new Subject<{ posts: Post[], maxPosts: number }>();
 
@@ -66,6 +68,9 @@ export class UserShowComponent implements OnInit {
                 }
             }
         }
+        document.getElementById("focused-image").addEventListener('pointerdown', (event) => {
+            this.unFocusImage();
+        })
     }
 
     toggleFollow() {
@@ -77,6 +82,21 @@ export class UserShowComponent implements OnInit {
                 this.user.followers = this.user.followers.filter(follower => follower != this.authService.getUserId());
             }
         })
+    }
+
+    focusImage(imageUrl: string) {
+        event.stopPropagation();
+        this.focusedImage = imageUrl;
+        document.getElementById("focused-image").classList.toggle("show");
+        // this.averageimagecolor = this.getAverageRGBofImage(document.getElementById("focused-image-img"));
+        // document.getElementById("focused-image").style.backgroundColor = `rgba(${this.averageimagecolor.r},${this.averageimagecolor.g},${this.averageimagecolor.b},0.5)`;
+    }
+
+    unFocusImage() {
+        document.getElementById("focused-image").classList.remove("show");
+        // this.focusedImage = null;
+        // this.averageimagecolor = null;
+        // document.getElementById("focused-image").style.backgroundColor = null;
     }
 
     toggleLike(postId: string) {
