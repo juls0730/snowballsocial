@@ -14,12 +14,13 @@ exports.startConversation = async (req, res) => {
     if (!partner || !userId) {
         error = true;
         return res.status(400).json({
-            message: 'Invalid request'
+            message: 'Invalid request ' + partner + ' ' + userId + ' ' + req.body.toString()
         });
     }
 
     if (partner.split(' ').length > 1) {
         partnerData = []
+        let friends;
         partner = partner.split(' ');
         for (let i = 0; i < partner.length; i++) {
             partner[i] = partner[i].trim();
@@ -37,10 +38,10 @@ exports.startConversation = async (req, res) => {
                         message: 'User not found'
                     });
                 }
-                partnerData[i] = user;
+                partnerData.push(await user);
 
 
-                if (await partnerData[i]._id == userId) {
+                if (partnerData[i]._id == userId) {
                     error = true;
                     return res.status(400).json({
                         message: 'You can\'t start a conversation with yourself'
@@ -69,13 +70,7 @@ exports.startConversation = async (req, res) => {
             return
         }
 
-
-        const conversation = new conversationmodel({
-            salt: salt,
-            participants: [userId].concat(partnerData.map(p => p._id))
-        });
-
-        await conversationmodel.find({ participants: { $all: [userId].concat(participantsIds) } }, async (err, existingConversation) => {
+        await conversationmodel.find({ participants: [userId].concat(participantsIds) }, async (err, existingConversation) => {
             if (err) {
                 return res.status(500).json({
                     message: 'Server error'
@@ -90,6 +85,11 @@ exports.startConversation = async (req, res) => {
                     message: 'You already have a conversation with these users'
                 });
             }
+
+            const conversation = new conversationmodel({
+                salt: salt,
+                participants: [userId].concat(await partnerData.map(p => p._id))
+            });
 
             await conversation.save((err, conversation) => {
                 if (err) {
@@ -613,7 +613,7 @@ exports.deleteConversation = (req, res) => {
                         return;
                     }
 
-                    res.status(200).json({
+                    return res.status(200).json({
                         message: "Conversation deleted"
                     });
                 })
@@ -629,7 +629,7 @@ exports.deleteConversation = (req, res) => {
                     return;
                 }
 
-                res.status(200).json({
+                return res.status(200).json({
                     message: "Conversation deleted"
                 });
             })

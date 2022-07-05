@@ -21,9 +21,10 @@ const signupLimiter = rateLimit({
 })
 
 module.exports = function(app) {
-    app.post('/api/user/login', [loginLimiter], controller.login);
-    app.post('/api/user/signup', [signupLimiter], controller.signup);
-    app.get('/api/user/:id', controller.findOne);
-    app.get('/api/user/:id/posts', controller.getUserPosts);
-    app.post('/api/user/:userId/follow', [checkAuth], controller.followUser);
+    app.post('/user/login', [loginLimiter], controller.login);
+    app.post('/user/signup', [signupLimiter], controller.signup);
+    app.get('/user/:id', controller.findOne);
+    app.get('/user/:id/posts', controller.getUserPosts);
+    app.post('/user/:userId/follow', [checkAuth], controller.followUser);
+    app.get('/user/search/:searchTerm', [checkAuth], controller.search);
 };

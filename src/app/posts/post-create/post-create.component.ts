@@ -51,7 +51,6 @@ export class PostCreateComponent implements OnInit {
                 return;
             }
         }
-        console.log(this.form.value.image)
 
         this.postsService.addPost(this.form.value.content, this.form.value.image);
         this.form.reset();

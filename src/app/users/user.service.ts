@@ -24,53 +24,59 @@ export class UserService {
         return this.http.get<{
             posts: any[], maxPosts: number
         }>(`https://${environment.api_location}/api/user/${id}/posts` + queryParams)
-        .pipe(
-            map(postData => {
-                return {
-                    posts: postData.posts.map(post => {
-                        return {
-                            content: post.content,
-                            id: post._id,
-                            imagePath: post.imagePath,
-                            creator: post.creator._id,
-                            creatorname: post.creator.username,
-                            replies: post.replies,
-                            likes: post.likes
-                        };
-                    }),
-                    maxPosts: postData.maxPosts
-                };
-            })
-        );
+            .pipe(
+                map(postData => {
+                    return {
+                        posts: postData.posts.map(post => {
+                            return {
+                                content: post.content,
+                                id: post._id,
+                                imagePath: post.imagePath,
+                                creator: post.creator._id,
+                                creatorname: post.creator.username,
+                                replies: post.replies,
+                                likes: post.likes
+                            };
+                        }),
+                        maxPosts: postData.maxPosts
+                    };
+                })
+            );
     }
-    
+
     addPosts(id: string, currentPage: number) {
         const queryParams = `?currentpage=${currentPage}`;
         return this.http.get<{
             posts: any[], maxPosts: number
         }>(`https://${environment.api_location}/api/user/${id}/posts` + queryParams)
-        .pipe(
-            map(postData => {
-                return {
-                    posts: postData.posts.map(post => {
-                        return {
-                            content: post.content,
-                            id: post._id,
-                            imagePath: post.imagePath,
-                            creator: post.creator._id,
-                            creatorname: post.creator.username,
-                            replies: post.replies,
-                            likes: post.likes
-                        };
-                    }),
-                };
-            })
-        );
+            .pipe(
+                map(postData => {
+                    return {
+                        posts: postData.posts.map(post => {
+                            return {
+                                content: post.content,
+                                id: post._id,
+                                imagePath: post.imagePath,
+                                creator: post.creator._id,
+                                creatorname: post.creator.username,
+                                replies: post.replies,
+                                likes: post.likes
+                            };
+                        }),
+                    };
+                })
+            );
     }
 
     followUser(id: string) {
         return this.http.post<{
             message: string, user: any
         }>(`https://${environment.api_location}/api/user/${id}/toggleFollow`, {});
+    }
+
+    searchUsers(searchTerm: string) {
+        return this.http.get<{
+            users: any[]
+        }>(`https://${environment.api_location}/api/user/search/${searchTerm}`);
     }
 }

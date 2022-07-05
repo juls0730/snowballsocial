@@ -12,11 +12,9 @@ export class ErrorInterceptor implements HttpInterceptor {
                 let errorMessage = "An Unknown Error Occurred!"
                 if (error.statusText) {
                     errorMessage = error.statusText;
-                    console.log(errorMessage);
                 }
                 if (error.error.message) {
                     errorMessage = error.error.message;
-                    console.log(errorMessage);
                 }
                 Swal.fire({
                     title: "An Error Occurred!",

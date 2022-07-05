@@ -23,7 +23,7 @@
     cursor: pointer;
     color: #ccc;
     position: absolute;
-    right: calc(0px + 8%);
+    right: calc(0px + 5%);
     top: calc(48px / 3.25);
     width: 24px;
     height: 24px;

@@ -1,13 +1,10 @@
 const asyncify = require("express-asyncify")
 const express = require('express');
 const app = asyncify(express());
-const userrouter = require('./controllers/user');
-const postsrouter = require('./controllers/posts');
 const bodyParser = require('body-parser');
 const path = require("path");
 const cors = require('cors');
 var http = require('http')
-var https = require('https')
 const server = http.createServer(app);
 const mongoose = require('mongoose');
 var compression = require('compression');
@@ -34,15 +31,19 @@ app.use(cors())
 app.use(helmet())
 app.use(cookieParser())
 var http = require("http").Server(app)
-
-/*
 var csrf = require('csurf')
-var csrfProtection = csrf({ cookie: true });
-app.use(csrfProtection);
-*/
 
-//app.set("trust proxy", 1); // trust linode
-app.disable('x-powered-by')
+var csrfProtection = csrf({
+    cookie: {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        key: "csrfToken",
+    },
+});
+
+app.use(csrfProtection);
+
 
 const shouldCompress = (req, res) => {
     if (req.headers['x-no-compression'] === 'true') {
@@ -68,6 +69,7 @@ const io = require('socket.io')(server, {
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "https://" + process.env['SERVER_LOCATION']);
     res.setHeader("Cross-Origin-Resource-Policy", "same-site");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept, Authorization");
@@ -80,11 +82,12 @@ app.use("/images", express.static(path.join("backend/images"), {
     maxAge: imageTTL
 }));
 
-/*
-app.get('/api/getcsrftoken', function (req, res) {
-    return res.json({ csrfToken: req.csrfToken() });
-});
-*/
+app.get('/getcsrftoken', (req, res) => {
+    res.setHeader("set-cookie", [`XSRF-TOKEN=${req.csrfToken()}; Path=/api; HttpOnly; Secure; SameSite=Strict; Max-Age=3600`]);
+    res.status(200).json({
+        csrfToken: req.csrfToken()  
+    });
+})
 
 require('./routes/posts')(app);
 require('./routes/user')(app);

@@ -19,10 +19,11 @@ import { ConversationShowComponent } from './conversations/conversation-show/con
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { CsrfInterceptor } from './csrf/csrf-interceptor';
 
 const config: SocketIoConfig = {
-	url: environment.socket_url, // socket server url;
-	options: {}
+  url: environment.socket_url, // socket server url;
+  options: {}
 }
 
 @NgModule({
@@ -44,6 +45,7 @@ const config: SocketIoConfig = {
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    HttpClientModule,
     ReactiveFormsModule,
     AppRoutingModule,
     SocketIoModule.forRoot(config),
@@ -53,12 +55,10 @@ const config: SocketIoConfig = {
     })
   ],
   providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor, multi: true
-    },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     CookieService,
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CsrfInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
   entryComponents: []

@@ -31,10 +31,10 @@ const messageparser = multer({
 }).single('image');
 
 module.exports = function (app) {
-    app.post("/api/conversation", [checkAuth], controller.startConversation);
-    app.post("/api/conversation/:id/message", [checkAuth, messageparser], controller.message);
-    app.put("/api/conversation/:id", [checkAuth], controller.updateConversation);
-    app.get("/api/conversation/:id", [checkAuth], controller.getConversation);
-    app.get("/api/conversations", [checkAuth], controller.getUsersConversations);
-    app.delete("/api/conversation/:id", [checkAuth], controller.deleteConversation);
+    app.post("/conversation", [checkAuth], controller.startConversation);
+    app.post("/conversation/:id/message", [checkAuth, messageparser], controller.message);
+    app.put("/conversation/:id", [checkAuth], controller.updateConversation);
+    app.get("/conversation/:id", [checkAuth], controller.getConversation);
+    app.get("/conversations", [checkAuth], controller.getUsersConversations);
+    app.delete("/conversation/:id", [checkAuth], controller.deleteConversation);
 }

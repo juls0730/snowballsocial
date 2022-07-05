@@ -4,6 +4,8 @@ import { AuthService } from 'src/app/authentication/auth.service';
 import { Conversation } from '../conversation.model';
 import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { User } from 'src/app/authentication/user.model';
+import { UserService } from 'src/app/users/user.service';
 
 @Component({
     selector: "app-conversations-list",
@@ -12,11 +14,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 
 export class ConversationsListComponent implements OnInit, OnDestroy {
-    constructor(public conversationService: ConversationService, private authService: AuthService) { }
+    constructor(public conversationService: ConversationService, private authService: AuthService, private userService: UserService) { }
     Loading: boolean = false;
     form: FormGroup;
     @Input() conversations: Conversation[] = [];
     private ConversationSub: Subscription;
+    SearchResults: User[] = [];
 
     ngOnInit() {
         this.form = new FormGroup({

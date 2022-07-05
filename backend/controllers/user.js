@@ -292,3 +292,50 @@ exports.followUser = async function (req, res) {
         }
     })
 }
+
+exports.search = async function (req, res) {
+    if (!req.query.search) {
+        return res.status(400).json({
+            message: "Search query not defined"
+        })
+    }
+
+    await user.find({ username: { $regex: req.query.search, $options: 'i' } }).lean().exec(async (err, users) => {
+        if (err) {
+            return res.status(500).json({
+                message: "Internal server error"
+            })
+        }
+
+        if (users.length == 0) {
+            return res.status(404).json({
+                message: "No users found"
+            })
+        }
+
+        for (let i = 0; i < users.length; i++) {
+            await redisClient.get('cache-user-' + users[i]._id, (err, reply) => {
+                if (reply == null || err) {
+                    user.findById(users[i]._id, '-password -__v -email', async function (err, user) {
+                        if (err) {
+                            return res.status(500).json({
+                                message: "Fetching posts failed"
+                            });
+                        }
+
+                        users[i] = user;
+                        redisClient.set('cache-user-' + users[i]._id, JSON.stringify(user))
+                    })
+                } else {
+                    users[i] = JSON.parse(reply)
+                }
+            })
+            if (i === users.length - 1) {
+                return res.status(200).json({
+                    message: "Users fetched successfully",
+                    users: users
+                });
+            }
+        }
+    })
+}
